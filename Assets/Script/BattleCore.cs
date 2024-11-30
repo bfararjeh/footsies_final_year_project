@@ -268,6 +268,12 @@ namespace Footsies
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
+            // THIS IS THE CODE THAT UPDATES EVERY FRAME
+            // YOUR CODE THAT OUTPUTS STUFF WILL BE HERE
+            // FIND A WAY TO PULL WHAT YOU WANT, AND PRINT IT OUT
+            // THE OUTPUT IS SAVED IN /%LOCALAPPDATA%/UNITY/EDITOR/EDITOR.LOG
+            print("test");
+
             _fighters.ForEach((f) => f.UpdateActionRequest());
             _fighters.ForEach((f) => f.UpdateMovement());
             _fighters.ForEach((f) => f.UpdateBoxes());

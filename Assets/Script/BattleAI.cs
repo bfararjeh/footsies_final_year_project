@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngineInternal;
 
 namespace Footsies
 {
@@ -15,6 +17,7 @@ namespace Footsies
             public bool isOpponentBlocking;
             public bool isOpponentNormalAttack;
             public bool isOpponentSpecialAttack;
+
         }
 
         private BattleCore battleCore;
@@ -354,6 +357,7 @@ namespace Footsies
                 fightStates[i] = fightStates[i - 1];
             }
             fightStates[0] = currentFightState;
+
         }
 
         private FightState GetCurrentFightState()
