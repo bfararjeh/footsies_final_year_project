@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -82,9 +85,15 @@ namespace Footsies
         private float koStateTime = 2f;
         private float endStateTime = 3f;
         private float endStateSkippableTime = 1.5f;
+        private string fightData;
+
+        public string trainingData;
+        public int currentFrameCount;
+        public bool dataLogged;
 
         void Awake()
         {
+
             // Setup dictionary from ScriptableObject data
             fighterDataList.ForEach((data) => data.setupDictionary());
 
@@ -107,6 +116,12 @@ namespace Footsies
                 case RoundStateType.Stop:
 
                     ChangeRoundState(RoundStateType.Intro);
+                    // sets the frame count to 0 as well as marking data as
+                    // having not been logged
+                    // coulve used the preexisting frame count, but cba to
+                    // figure it out lmao
+                    currentFrameCount = 0;
+                    dataLogged = false;
 
                     break;
                 case RoundStateType.Intro:
@@ -268,11 +283,14 @@ namespace Footsies
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
-            // THIS IS THE CODE THAT UPDATES EVERY FRAME
-            // YOUR CODE THAT OUTPUTS STUFF WILL BE HERE
-            // FIND A WAY TO PULL WHAT YOU WANT, AND PRINT IT OUT
-            // THE OUTPUT IS SAVED IN /%LOCALAPPDATA%/UNITY/EDITOR/EDITOR.LOG
-            print("test");
+            // increments the current frame (effectively a timecode)
+            // appends data to trainingData string
+            currentFrameCount++;
+            trainingData = trainingData +
+            currentFrameCount + ": " +
+            // "P1_position:" + fighter1.position +
+            // "P1_current_action:" + fighter1.currentActionID +
+            "\n";
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
             _fighters.ForEach((f) => f.UpdateMovement());
@@ -290,6 +308,12 @@ namespace Footsies
 
         void UpdateEndState()
         {
+            // outputs the training data to the correct file
+            // datalogged var ensures it only runs once
+            if (dataLogged == false) {
+                OutputTrainingData();
+            }
+
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
@@ -548,6 +572,20 @@ namespace Footsies
                 return p2FrameLeft - p1FrameLeft;
             else
                 return p1FrameLeft - p2FrameLeft;
+        }
+    
+        // writes the training data to the correct file
+        // marks data as having been logged
+        void OutputTrainingData()
+        {
+            string trainingDataLogPath = "dataLog#" + 
+            DateTime.Now.ToString(@"MM-dd-yy--HH-mm-ss") + 
+            ".txt";
+
+            var path = @"TrainingData/" + trainingDataLogPath;
+            File.WriteAllText(path, trainingData);
+
+            dataLogged = true;
         }
     }
 
