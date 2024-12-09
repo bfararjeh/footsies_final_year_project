@@ -1,3 +1,15 @@
+# My Final Year Project
+
+For my final year project, I've decided to implement an advanced lifelike AI utilising neural networks and machine learning to improve upon the existing AI in the game and give players a better singleplayer experience.
+This repository is a fork of the main project, and will contain any changes I've made to the original source code, as well as any files created in the process of devloping this AI.
+This project can be downloaded and played at your liesure, provided it may be in an incomplete state at any given point in time.
+This AI will only work on the current older build of Footsies, as the most recent build is available only for purchase on steam, and does not come with the source code, which was the defining reason for choosing to work on this older branch.
+
+Below is the original ReadMe for this project.
+
+
+
+
 # Footsies
 
 FOOTSIES is a 2D fighting game where players can control character movement horizontally 
