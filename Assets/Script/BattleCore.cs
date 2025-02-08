@@ -286,11 +286,28 @@ namespace Footsies
             // increments the current frame (effectively a timecode)
             // appends data to trainingData string
             currentFrameCount++;
+
             trainingData = trainingData +
             currentFrameCount + ": " +
-            // "P1_position:" + fighter1.position +
-            // "P1_current_action:" + fighter1.currentActionID +
-            "\n";
+            "P1_INFO:" + 
+            "position(" + fighter1.position +
+            ")velocity(" + fighter1.velocity_x +
+            ")dead(" + fighter1.isDead +
+            ")vitalHealth(" + fighter1.vitalHealth +
+            ")guardHealth(" + fighter1.guardHealth +
+            ")currentAction:" + fighter1.currentActionID +
+            ")isInHitStun(" + fighter1.isInHitStun +
+            ")" +
+
+            "P2_INFO:" + 
+            "position(" + fighter2.position +
+            ")velocity(" + fighter2.velocity_x +
+            ")dead(" + fighter2.isDead +
+            ")vitalHealth(" + fighter2.vitalHealth +
+            ")guardHealth(" + fighter2.guardHealth +
+            ")currentAction:" + fighter2.currentActionID +
+            ")isInHitStun(" + fighter2.isInHitStun +
+            ")\n";
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
             _fighters.ForEach((f) => f.UpdateMovement());
@@ -584,6 +601,8 @@ namespace Footsies
 
             var path = @"TrainingData/" + trainingDataLogPath;
             File.WriteAllText(path, trainingData);
+
+            trainingData = "";
 
             dataLogged = true;
         }
