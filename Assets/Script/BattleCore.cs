@@ -283,6 +283,14 @@ namespace Footsies
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
+            _fighters.ForEach((f) => f.UpdateActionRequest());
+            _fighters.ForEach((f) => f.UpdateMovement());
+            _fighters.ForEach((f) => f.UpdateBoxes());
+
+            UpdatePushCharacterVsCharacter();
+            UpdatePushCharacterVsBackground();
+            UpdateHitboxHurtboxCollision();
+
             // increments the current frame (effectively a timecode)
             // appends data to trainingData string
             currentFrameCount++;
@@ -291,31 +299,23 @@ namespace Footsies
             currentFrameCount + ": " +
             "P1_INFO:" + 
             "position(" + fighter1.position +
-            ")velocity(" + fighter1.velocity_x +
-            ")dead(" + fighter1.isDead +
-            ")vitalHealth(" + fighter1.vitalHealth +
             ")guardHealth(" + fighter1.guardHealth +
+            ")cancelable(" + fighter1.isAlwaysCancelable +
+            ")dead(" + fighter1.isDead +
             ")currentAction:" + fighter1.currentActionID +
             ")isInHitStun(" + fighter1.isInHitStun +
-            ")" +
+            ")\n" 
+            +
 
             "P2_INFO:" + 
             "position(" + fighter2.position +
-            ")velocity(" + fighter2.velocity_x +
-            ")dead(" + fighter2.isDead +
-            ")vitalHealth(" + fighter2.vitalHealth +
             ")guardHealth(" + fighter2.guardHealth +
+            ")cancelable(" + fighter2.isAlwaysCancelable +
+            ")dead(" + fighter2.isDead +
             ")currentAction:" + fighter2.currentActionID +
             ")isInHitStun(" + fighter2.isInHitStun +
-            ")\n";
-
-            _fighters.ForEach((f) => f.UpdateActionRequest());
-            _fighters.ForEach((f) => f.UpdateMovement());
-            _fighters.ForEach((f) => f.UpdateBoxes());
-
-            UpdatePushCharacterVsCharacter();
-            UpdatePushCharacterVsBackground();
-            UpdateHitboxHurtboxCollision();
+            ")\n\n"
+            ;
         }
 
         void UpdateKOState()
@@ -325,12 +325,6 @@ namespace Footsies
 
         void UpdateEndState()
         {
-            // outputs the training data to the correct file
-            // datalogged var ensures it only runs once
-            if (dataLogged == false) {
-                OutputTrainingData();
-            }
-
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
@@ -339,6 +333,12 @@ namespace Footsies
 
             UpdatePushCharacterVsCharacter();
             UpdatePushCharacterVsBackground();
+
+            // outputs the training data to the correct file
+            // datalogged var ensures it only runs once
+            if (dataLogged == false) {
+                OutputTrainingData();
+            }
         }
 
         InputData GetP1InputData()

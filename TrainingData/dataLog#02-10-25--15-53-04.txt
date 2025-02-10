@@ -1,0 +1,291 @@
+1: P1_INFO:position((-2.00, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((2.04, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+2: P1_INFO:position((-2.00, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((2.07, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+3: P1_INFO:position((-1.96, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.11, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+4: P1_INFO:position((-1.91, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.14, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+5: P1_INFO:position((-1.87, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.18, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+6: P1_INFO:position((-1.82, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.22, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:2)isInHitStun(False)
+
+7: P1_INFO:position((-1.78, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.17, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+8: P1_INFO:position((-1.74, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.13, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+9: P1_INFO:position((-1.69, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.08, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+10: P1_INFO:position((-1.65, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.04, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+11: P1_INFO:position((-1.60, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((2.00, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+12: P1_INFO:position((-1.56, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.95, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+13: P1_INFO:position((-1.52, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.91, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+14: P1_INFO:position((-1.47, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.86, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+15: P1_INFO:position((-1.43, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+16: P1_INFO:position((-1.38, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.78, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+17: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+P2_INFO:position((1.73, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+18: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.69, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+19: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.64, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+20: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.60, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+21: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.56, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+22: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.51, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+23: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.47, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+24: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.42, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+25: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.38, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+26: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.34, 0.00))guardHealth(3)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+27: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+28: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+29: P1_INFO:position((-1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.34, 0.00))guardHealth(3)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+30: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+31: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+32: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+33: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+34: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+35: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+36: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+37: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+38: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+39: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+40: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+41: P1_INFO:position((-1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.34, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+
+42: P1_INFO:position((-1.40, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.40, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+43: P1_INFO:position((-1.46, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.46, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+44: P1_INFO:position((-1.52, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.52, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+45: P1_INFO:position((-1.58, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.58, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+46: P1_INFO:position((-1.62, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.62, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+47: P1_INFO:position((-1.66, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.66, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+48: P1_INFO:position((-1.70, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.70, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+49: P1_INFO:position((-1.74, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.74, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+50: P1_INFO:position((-1.78, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.78, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+51: P1_INFO:position((-1.79, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.79, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+52: P1_INFO:position((-1.80, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.80, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+53: P1_INFO:position((-1.81, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.81, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+54: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+55: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+56: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+57: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+58: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+
+59: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.77, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+60: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.73, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+61: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.68, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+62: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.64, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+63: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.60, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+64: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.55, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+65: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.51, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+66: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.46, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+67: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:0)isInHitStun(False)
+P2_INFO:position((1.42, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+68: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.38, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+69: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.33, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+70: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(True)dead(False)currentAction:1)isInHitStun(False)
+
+71: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+72: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+73: P1_INFO:position((-1.82, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:100)isInHitStun(False)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(False)
+
+74: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+75: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+76: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+77: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+78: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+79: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+80: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+81: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+82: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+83: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+84: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+85: P1_INFO:position((-1.82, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(True)
+P2_INFO:position((1.29, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:105)isInHitStun(True)
+
+86: P1_INFO:position((-1.88, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.25, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+87: P1_INFO:position((-1.94, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.21, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+88: P1_INFO:position((-2.00, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.17, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+89: P1_INFO:position((-2.06, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.13, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+90: P1_INFO:position((-2.10, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((1.03, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+91: P1_INFO:position((-2.14, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.93, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+92: P1_INFO:position((-2.18, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.83, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+93: P1_INFO:position((-2.22, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.73, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+94: P1_INFO:position((-2.26, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.63, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+95: P1_INFO:position((-2.27, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.53, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+96: P1_INFO:position((-2.28, 0.00))guardHealth(1)cancelable(False)dead(False)currentAction:200)isInHitStun(False)
+P2_INFO:position((0.43, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
+97: P1_INFO:position((-2.29, 0.00))guardHealth(0)cancelable(False)dead(True)currentAction:500)isInHitStun(False)
+P2_INFO:position((0.33, 0.00))guardHealth(2)cancelable(False)dead(False)currentAction:110)isInHitStun(False)
+
