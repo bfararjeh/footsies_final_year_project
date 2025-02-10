@@ -298,23 +298,23 @@ namespace Footsies
             trainingData = trainingData +
             currentFrameCount + ": " +
             "P1_INFO:" + 
-            "position(" + fighter1.position +
-            ")guardHealth(" + fighter1.guardHealth +
+            "position" + fighter1.position +
+            "guardHealth(" + fighter1.guardHealth +
             ")cancelable(" + fighter1.isAlwaysCancelable +
             ")dead(" + fighter1.isDead +
-            ")currentAction:" + fighter1.currentActionID +
+            ")currentAction(" + fighter1.currentActionID +
             ")isInHitStun(" + fighter1.isInHitStun +
-            ")\n" 
+            ")" 
             +
 
             "P2_INFO:" + 
-            "position(" + fighter2.position +
-            ")guardHealth(" + fighter2.guardHealth +
+            "position" + fighter2.position +
+            "guardHealth(" + fighter2.guardHealth +
             ")cancelable(" + fighter2.isAlwaysCancelable +
             ")dead(" + fighter2.isDead +
-            ")currentAction:" + fighter2.currentActionID +
+            ")currentAction(" + fighter2.currentActionID +
             ")isInHitStun(" + fighter2.isInHitStun +
-            ")\n\n"
+            ")\n"
             ;
         }
 
