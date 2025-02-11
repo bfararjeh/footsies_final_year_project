@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -109,7 +110,7 @@ namespace Footsies
         public int spriteShakePosition { get; private set; }
         private int maxSpriteShakeFrame = 6;
 
-        private bool hasWon = false;
+        public bool hasWon = false;
 
         /// <summary>
         /// Setup fighter at the start of battle

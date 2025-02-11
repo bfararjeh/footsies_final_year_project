@@ -292,28 +292,44 @@ namespace Footsies
             UpdateHitboxHurtboxCollision();
 
             // increments the current frame (effectively a timecode)
-            // appends data to trainingData string
             currentFrameCount++;
 
+            // appends data to trainingData string
             trainingData = trainingData +
             currentFrameCount + ": " +
             "P1_INFO:" + 
-            "position" + fighter1.position +
-            "guardHealth(" + fighter1.guardHealth +
-            ")cancelable(" + fighter1.isAlwaysCancelable +
-            ")dead(" + fighter1.isDead +
-            ")currentAction(" + fighter1.currentActionID +
+            "currentInput(" + p1Input.input +
+            ")position" + fighter1.position +
+            "velocity_x(" + fighter1.velocity_x +
+            ")isDead(" + fighter1.isDead +
+            ")vitalHealth(" + fighter1.vitalHealth +
+            ")guardHealth(" + fighter1.guardHealth +
+            ")currentActionID(" + fighter1.currentActionID +
+            ")currentActionFrame(" + fighter1.currentActionFrame +
+            ")currentActionFrameCount(" + fighter1.currentActionFrameCount +
+            ")isAlwaysCancelable(" + fighter1.isAlwaysCancelable +
+            ")currentActionHitCount(" + fighter1.currentActionHitCount +
+            ")currentHitStunFrame(" + fighter1.currentHitStunFrame +
             ")isInHitStun(" + fighter1.isInHitStun +
+            ")isAlwaysCancelable(" + fighter1.isAlwaysCancelable +
             ")" 
             +
 
-            "P2_INFO:" + 
-            "position" + fighter2.position +
-            "guardHealth(" + fighter2.guardHealth +
-            ")cancelable(" + fighter2.isAlwaysCancelable +
-            ")dead(" + fighter2.isDead +
-            ")currentAction(" + fighter2.currentActionID +
+            "P1_INFO:" + 
+            "currentInput(" + p2Input.input +
+            ")position" + fighter2.position +
+            "velocity_x(" + fighter2.velocity_x +
+            ")isDead(" + fighter2.isDead +
+            ")vitalHealth(" + fighter2.vitalHealth +
+            ")guardHealth(" + fighter2.guardHealth +
+            ")currentActionID(" + fighter2.currentActionID +
+            ")currentActionFrame(" + fighter2.currentActionFrame +
+            ")currentActionFrameCount(" + fighter2.currentActionFrameCount +
+            ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
+            ")currentActionHitCount(" + fighter2.currentActionHitCount +
+            ")currentHitStunFrame(" + fighter2.currentHitStunFrame +
             ")isInHitStun(" + fighter2.isInHitStun +
+            ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
             ")\n"
             ;
         }
@@ -336,7 +352,7 @@ namespace Footsies
 
             // outputs the training data to the correct file
             // datalogged var ensures it only runs once
-            if (dataLogged == false) {
+            if (dataLogged == false && fighter1.hasWon == true) {
                 OutputTrainingData();
             }
         }
