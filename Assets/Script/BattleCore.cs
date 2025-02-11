@@ -294,6 +294,8 @@ namespace Footsies
             // increments the current frame (effectively a timecode)
             currentFrameCount++;
 
+            try{
+
             // appends data to trainingData string
             trainingData = trainingData +
             currentFrameCount + ": " +
@@ -314,8 +316,7 @@ namespace Footsies
             ")isAlwaysCancelable(" + fighter1.isAlwaysCancelable +
             ")" 
             +
-
-            "P1_INFO:" + 
+            "P2_INFO:" + 
             "currentInput(" + p2Input.input +
             ")position" + fighter2.position +
             "velocity_x(" + fighter2.velocity_x +
@@ -330,8 +331,14 @@ namespace Footsies
             ")currentHitStunFrame(" + fighter2.currentHitStunFrame +
             ")isInHitStun(" + fighter2.isInHitStun +
             ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
-            ")\n"
-            ;
+            ")\n";
+            }
+
+            catch
+            {
+                Console.WriteLine("Error appending current frame data to log.");
+            }
+
         }
 
         void UpdateKOState()
@@ -615,12 +622,20 @@ namespace Footsies
             DateTime.Now.ToString(@"MM-dd-yy--HH-mm-ss") + 
             ".txt";
 
+            try
+            {
+                
             var path = @"TrainingData/" + trainingDataLogPath;
             File.WriteAllText(path, trainingData);
 
             trainingData = "";
 
             dataLogged = true;
+            }
+            catch
+            {
+                Console.WriteLine("Unable to write to log file");
+            }
         }
     }
 
