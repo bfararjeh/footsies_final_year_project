@@ -283,15 +283,6 @@ namespace Footsies
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
-            // increments the current frame (effectively a timecode)
-            // appends data to trainingData string
-            currentFrameCount++;
-            trainingData = trainingData +
-            currentFrameCount + ": " +
-            // "P1_position:" + fighter1.position +
-            // "P1_current_action:" + fighter1.currentActionID +
-            "\n";
-
             _fighters.ForEach((f) => f.UpdateActionRequest());
             _fighters.ForEach((f) => f.UpdateMovement());
             _fighters.ForEach((f) => f.UpdateBoxes());
@@ -299,6 +290,55 @@ namespace Footsies
             UpdatePushCharacterVsCharacter();
             UpdatePushCharacterVsBackground();
             UpdateHitboxHurtboxCollision();
+
+            // increments the current frame (effectively a timecode)
+            currentFrameCount++;
+
+            try{
+
+            // appends data to trainingData string
+            trainingData = trainingData +
+            currentFrameCount + ": " +
+            "P1_INFO:" + 
+            "currentInput(" + p1Input.input +
+            ")position" + fighter1.position +
+            "velocity_x(" + fighter1.velocity_x +
+            ")isDead(" + fighter1.isDead +
+            ")vitalHealth(" + fighter1.vitalHealth +
+            ")guardHealth(" + fighter1.guardHealth +
+            ")currentActionID(" + fighter1.currentActionID +
+            ")currentActionFrame(" + fighter1.currentActionFrame +
+            ")currentActionFrameCount(" + fighter1.currentActionFrameCount +
+            ")isAlwaysCancelable(" + fighter1.isAlwaysCancelable +
+            ")currentActionHitCount(" + fighter1.currentActionHitCount +
+            ")currentHitStunFrame(" + fighter1.currentHitStunFrame +
+            ")isInHitStun(" + fighter1.isInHitStun +
+            ")isAlwaysCancelable(" + fighter1.isAlwaysCancelable +
+            ")" 
+            +
+            "P2_INFO:" + 
+            "currentInput(" + p2Input.input +
+            ")position" + fighter2.position +
+            "velocity_x(" + fighter2.velocity_x +
+            ")isDead(" + fighter2.isDead +
+            ")vitalHealth(" + fighter2.vitalHealth +
+            ")guardHealth(" + fighter2.guardHealth +
+            ")currentActionID(" + fighter2.currentActionID +
+            ")currentActionFrame(" + fighter2.currentActionFrame +
+            ")currentActionFrameCount(" + fighter2.currentActionFrameCount +
+            ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
+            ")currentActionHitCount(" + fighter2.currentActionHitCount +
+            ")currentHitStunFrame(" + fighter2.currentHitStunFrame +
+            ")isInHitStun(" + fighter2.isInHitStun +
+            ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
+            ")\n";
+            }
+
+            catch
+            {
+                Console.WriteLine("Error appending current frame data to log.");
+            }
+
         }
 
         void UpdateKOState()
@@ -308,12 +348,6 @@ namespace Footsies
 
         void UpdateEndState()
         {
-            // outputs the training data to the correct file
-            // datalogged var ensures it only runs once
-            if (dataLogged == false) {
-                OutputTrainingData();
-            }
-
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
@@ -322,6 +356,12 @@ namespace Footsies
 
             UpdatePushCharacterVsCharacter();
             UpdatePushCharacterVsBackground();
+
+            // outputs the training data to the correct file
+            // datalogged var ensures it only runs once
+            if (dataLogged == false && fighter1.hasWon == true) {
+                OutputTrainingData();
+            }
         }
 
         InputData GetP1InputData()
@@ -582,10 +622,20 @@ namespace Footsies
             DateTime.Now.ToString(@"MM-dd-yy--HH-mm-ss") + 
             ".txt";
 
+            try
+            {
+                
             var path = @"TrainingData/" + trainingDataLogPath;
             File.WriteAllText(path, trainingData);
 
+            trainingData = "";
+
             dataLogged = true;
+            }
+            catch
+            {
+                Console.WriteLine("Unable to write to log file");
+            }
         }
     }
 

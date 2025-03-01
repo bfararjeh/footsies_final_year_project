@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,10 +87,14 @@ namespace Footsies
 
         public int currentActionID { get; private set; }
         public int currentActionFrame { get; private set; }
-        public int currentActionFrameCount { get { return fighterData.actions[currentActionID].frameCount; } }
-        private bool isActionEnd { get { return (currentActionFrame >= fighterData.actions[currentActionID].frameCount); } }
-        public bool isAlwaysCancelable { get { return fighterData.actions[currentActionID].alwaysCancelable; } }
-        
+        public int currentActionFrameCount { get {
+            return fighterData.actions[currentActionID].frameCount; } }
+        private bool isActionEnd { get {
+            return (currentActionFrame >= 
+            fighterData.actions[currentActionID].frameCount); } }
+        public bool isAlwaysCancelable { get { 
+            return fighterData.actions[currentActionID].alwaysCancelable; } }
+
         public int currentActionHitCount{ get; private set; }
 
         public int currentHitStunFrame { get; private set; }
@@ -109,7 +114,7 @@ namespace Footsies
         public int spriteShakePosition { get; private set; }
         private int maxSpriteShakeFrame = 6;
 
-        private bool hasWon = false;
+        public bool hasWon = false;
 
         /// <summary>
         /// Setup fighter at the start of battle
