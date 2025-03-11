@@ -132,8 +132,8 @@ namespace Footsies
             }
             else if (fightState.distanceX > 4f)
             {
-                var rand = Random.Range(0, 4);
-                if (rand <= 3)
+                var rand = Random.Range(0, 8);
+                if (rand <= 7)
                     AddNoAttack();
                 else
                     AddDelaySpecialAttack();
@@ -146,10 +146,10 @@ namespace Footsies
                     return;
                 }
 
-                var rand = Random.Range(0, 5);
-                if (rand <= 1)
+                var rand = Random.Range(0, 10);
+                if (rand <= 4)
                     AddNoAttack();
-                else if (rand <= 3)
+                else if (rand <= 8)
                     AddOneHitImmediateAttack();
                 else
                     AddDelaySpecialAttack();
@@ -166,12 +166,12 @@ namespace Footsies
             }
             else if (fightState.distanceX > 2f)
             {
-                var rand = Random.Range(0, 6);
-                if (rand <= 1)
+                var rand = Random.Range(0, 12);
+                if (rand <= 4)
                     AddOneHitImmediateAttack();
-                else if (rand <= 3)
+                else if (rand <= 8)
                     AddTwoHitImmediateAttack();
-                else if(rand == 4)
+                else if(rand == 10)
                     AddImmediateSpecialAttack();
                 else
                     AddDelaySpecialAttack();
