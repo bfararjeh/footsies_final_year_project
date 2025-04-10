@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Net.Security;
 using UnityEngine;
-using UnityEngine.Events;
+
+// disables unreadable code warning: just so i can comment out the output
+//  training data function while i test
+#pragma warning disable 0162
 
 namespace Footsies
 {
@@ -108,7 +111,8 @@ namespace Footsies
                 roundUIAnimator = roundUI.GetComponent<Animator>();
             }
         }
-        
+
+        [Obsolete]
         void FixedUpdate()
         {
             switch(_roundState)
@@ -183,6 +187,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         void ChangeRoundState(RoundStateType state)
         {
             _roundState = state;
@@ -255,6 +260,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         void UpdateIntroState()
         {
             var p1Input = GetP1InputData();
@@ -273,6 +279,7 @@ namespace Footsies
             UpdatePushCharacterVsBackground();
         }
 
+        [Obsolete]
         void UpdateFightState()
         {
             var p1Input = GetP1InputData();
@@ -346,6 +353,7 @@ namespace Footsies
 
         }
 
+        [Obsolete]
         void UpdateEndState()
         {
             _fighters.ForEach((f) => f.IncrementActionFrame());
@@ -364,6 +372,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         InputData GetP1InputData()
         {
             if(isReplayingLastRoundInput)
@@ -387,6 +396,7 @@ namespace Footsies
             return p1Input;
         }
 
+        [Obsolete]
         InputData GetP2InputData()
         {
             if (isReplayingLastRoundInput)
@@ -419,6 +429,7 @@ namespace Footsies
             return p2Input;
         }
 
+        [Obsolete]
         private bool IsKOSkipButtonPressed()
         {
             if (InputManager.Instance.GetButton(InputManager.Command.p1Attack))
@@ -468,6 +479,7 @@ namespace Footsies
             });
         }
 
+        [Obsolete]
         void UpdateHitboxHurtboxCollision()
         {
             foreach(var attacker in _fighters)
@@ -616,8 +628,16 @@ namespace Footsies
     
         // writes the training data to the correct file
         // marks data as having been logged
+        // currently the only call for this function is commented out, this is
+        //  due to not wanting bad training data while i test other features
+        // out
         void OutputTrainingData()
         {
+
+            // unreachable code past the return, remove this return statement
+            //  to reenable data logging
+            return;
+
             string trainingDataLogPath = "dataLog#" + 
             DateTime.Now.ToString(@"MM-dd-yy--HH-mm-ss") + 
             ".txt";
@@ -637,6 +657,7 @@ namespace Footsies
                 Console.WriteLine("Unable to write to log file");
             }
         }
-    }
+    
 
+    }
 }
