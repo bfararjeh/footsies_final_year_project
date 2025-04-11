@@ -343,7 +343,7 @@ namespace Footsies
 
             catch
             {
-                Console.WriteLine("Error appending current frame data to log.");
+                UnityEngine.Debug.Log("Error appending current frame data to log.");
             }
 
         }
@@ -654,7 +654,7 @@ namespace Footsies
             }
             catch
             {
-                Console.WriteLine("Unable to write to log file");
+                UnityEngine.Debug.Log("Unable to write to log file");
             }
         }
     
