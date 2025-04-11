@@ -13,29 +13,29 @@ namespace WebSocketClient
         {
             UnityEngine.Debug.Log("WebSocket Client Starting...");
             
+            // sets up a web server locally via port 8677
             using (ClientWebSocket client = new())
             {
                 Uri serverUri = new("ws://localhost:8677");
                 
                 try
                 {
-                    // Connect to the server
+                    // connect to the server
                     await client.ConnectAsync(serverUri, CancellationToken.None);
                     UnityEngine.Debug.Log("Connected to the server");
                     
-                    // Start a task to receive messages
+                    // start a task to receive messages
                     var receiveTask = ReceiveMessagesAsync(client);
                     
-                    // This block is where message sending happens
+                    // this block is where message sending happens
+                    // until proper code is written, a test message is sent
+                    //  repeatedly
                     while (client.State == WebSocketState.Open)
                     {
-                        Console.Write("Enter message (or 'exit' to quit): ");
-                        string message = Console.ReadLine();
+                        UnityEngine.Debug.Log("Sending test message...");
+                        string message = "Test message";
                         
-                        if (message.ToLower() == "exit")
-                            break;
-                        
-                        // Send the message
+                        // the message is encoded into UTF8 before being sent
                         byte[] messageBytes = Encoding.UTF8.GetBytes(message);
                         await client.SendAsync(new ArraySegment<byte>(messageBytes), 
                                               WebSocketMessageType.Text, 
@@ -43,7 +43,9 @@ namespace WebSocketClient
                                               CancellationToken.None);
                     }
                     
-                    // Close the connection gracefully
+                    // close the connection gracefully
+                    // this code is called when a server close message is
+                    //  recieved
                     await client.CloseAsync(WebSocketCloseStatus.NormalClosure, 
                                           "Client closing", 
                                           CancellationToken.None);
@@ -55,39 +57,24 @@ namespace WebSocketClient
             }
             
             UnityEngine.Debug.Log("Client shut down");
-            Console.ReadKey();
         }
         
         public static async Task ReceiveMessagesAsync(ClientWebSocket client)
         {
+            // creates a buffer to recieve the message into
             byte[] buffer = new byte[1024];
             
             while (client.State == WebSocketState.Open)
             {
                 try
                 {
-                    System.Threading.Thread.Sleep(50);
-                    int retryAttempts = 0;
-                    var result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                    while (true){
+                    // recieves the message from the server
+                    var result = await client.ReceiveAsync(
+                        new ArraySegment<byte>(buffer), CancellationToken.None);
 
-                        retryAttempts ++;
-
-                        if (result == null && retryAttempts < 3){
-                            result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                            retryAttempts ++;
-                        }
-                        else{
-                            break;
-                        }
-                    }
-
-                    if (retryAttempts == 3){
-                        UnityEngine.Debug.Log("Failed to secure connection (Retry Limit Reached)");
-                        break;
-                    }
-
-                    else if (result.MessageType == WebSocketMessageType.Text)
+                    // logs the recieved message, or if the recieved message is
+                    //  a close call, closes the connection
+                    if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         UnityEngine.Debug.Log($"Received: {message}");

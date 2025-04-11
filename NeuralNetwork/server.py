@@ -5,16 +5,14 @@ import websockets
 async def message_handler(websocket):
 
     try:
-        # This block is where message recieving and processing happens
+        # this block is where message recieving and processing happens
         async for message in websocket:
 
+            # currently just printing the recieved message and echoing it back
             print(f"Received message: {message}")
-            
-            # Echo the message back to the client
-            response = f"Server received: {message}"
-            await websocket.send(response)
+            # await websocket.send(f"Server received: {message}")
     
-    # Exception handling
+    # exception handling
     except websockets.exceptions.ConnectionClosedError:
         print("Connection closed unexpectedly")
         input()
@@ -28,7 +26,7 @@ async def message_handler(websocket):
         input()
 
 
-# Start the WebSocket server
+# start the WebSocket server
 async def start_server():
 
     server = await websockets.serve(message_handler, "localhost", 8677)
@@ -36,7 +34,7 @@ async def start_server():
     await server.wait_closed()
 
 
-# Run the server
+# run the server
 if __name__ == "__main__":
 
     try:
