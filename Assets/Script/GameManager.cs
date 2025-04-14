@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WebSocketClient;
@@ -28,6 +29,7 @@ namespace Footsies
         private void Start()
         {
             LoadTitleScene();
+            InitialiseNetworkControl();
         }
 
         private void Update()
@@ -46,7 +48,6 @@ namespace Footsies
             SceneManager.LoadScene((int)SceneIndex.Title);
             currentScene = SceneIndex.Title;
 
-            InitialiseNetworkControl();
         }
 
         [System.Obsolete]
@@ -75,33 +76,30 @@ namespace Footsies
             }
         }
 
-        // this function calls when the current game state is updated to "Fight"
-        //  and allows for the control of the P2 character via the network.
+        /*
+        the method that launches the Python server and Footsies client
+        called at program start
+        */
         void InitialiseNetworkControl()
         {
+            try
+            {
+                Process pythonServer = new();
+                pythonServer.StartInfo.FileName = @"NeuralNetwork\server.py";
+                pythonServer.Start();
 
-            // establishing client-server connection
-            try{
-                Process pythonServer = Process.Start(@"NeuralNetwork\server.py");
                 _ = FootsiesClient.Main();
-                
-                UnityEngine.Debug.Log("Initialised server-client connection");
+
+                UnityEngine.Debug.Log("Client and Server Launched");
             }
 
-            catch{
+            catch (Exception ex)
+            {
                 UnityEngine.Debug.Log("Failed to establish server-client connection.");
+                UnityEngine.Debug.Log($"{ex.Message}");
             }
 
         }
-
-        // this function relenquishes network control of the P2 character
-        void RelenquishNetworkControl()
-        {
-
-            UnityEngine.Debug.Log("Relenquished Network Control");
-
-        }
-    
     }
 
 }
