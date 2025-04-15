@@ -124,7 +124,7 @@ def create_dataframe(data):
     extractedData.to_csv(os.path.join(os.path.dirname(__file__), 'out.csv'))
 
 
-def main():
+def parseAllData():
 
     '''
     bit messy, but this grabs the path of the training data with easy 
@@ -140,5 +140,17 @@ def main():
     print("Data succesfully extracted")
 
 
+def grabRanges():
+
+    path = os.path.join(os.path.dirname(__file__), 'out.csv')
+
+    extractedData = pd.read_csv(path)
+
+    for label, content in extractedData.items():
+        print(f"column name: {label}\n" + \
+              "max value: {content.max()}\n" + \
+              "min value: {content.min()}\n\n")
+
+
 if __name__ == "__main__":
-    main()
+    parseAllData()
