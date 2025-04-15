@@ -124,7 +124,7 @@ def create_dataframe(data):
     extractedData.to_csv(os.path.join(os.path.dirname(__file__), 'out.csv'))
 
 
-def parseAllData():
+def main():
 
     '''
     bit messy, but this grabs the path of the training data with easy 
@@ -140,6 +140,9 @@ def parseAllData():
     print("Data succesfully extracted")
 
 
+'''
+function that can give me the ranges of values for normalisation needs
+'''
 def grabRanges():
 
     path = os.path.join(os.path.dirname(__file__), 'out.csv')
@@ -151,6 +154,16 @@ def grabRanges():
               "max value: {content.max()}\n" + \
               "min value: {content.min()}\n\n")
 
+'''
+function that pulls data from the "out.csv" file
+'''
+def pullDataFromCSV():
+
+    path = os.path.join(os.path.dirname(__file__), 'out.csv')
+    extractedData = pd.read_csv(path, index_col=0)
+
+    return extractedData
+
 
 if __name__ == "__main__":
-    parseAllData()
+    main()
