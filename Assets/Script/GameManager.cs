@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using WebSocketClient;
 
 namespace Footsies
 {
@@ -88,7 +87,7 @@ namespace Footsies
                 pythonServer.StartInfo.FileName = @"NeuralNetwork\server.py";
                 pythonServer.Start();
 
-                _ = FootsiesClient.Main();
+                _ = WebSocketClient.FootsiesClient.Main();
 
                 UnityEngine.Debug.Log("Client and Server Launched");
             }
