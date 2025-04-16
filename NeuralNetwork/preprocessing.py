@@ -124,6 +124,10 @@ def normalise(df):
                      "P2_currentHitStunFrame"], 
                      inplace=True)
 
+    # these are droppes, as vitalHealth serves the same purpose as isDead
+    df.drop(columns=["P1_vitalHealth",
+                     "P2_vitalHealth"], 
+                     inplace=True)
 
 
     # dict comprehension to convert values to floats instead of np.float64
