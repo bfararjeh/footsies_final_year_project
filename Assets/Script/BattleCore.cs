@@ -1,10 +1,15 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Net.Security;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.Events;
+
+// disables unreadable code warning: just so i can comment out the output
+//  training data function while i test
+#pragma warning disable 0162
 
 namespace Footsies
 {
@@ -87,9 +92,16 @@ namespace Footsies
         private float endStateSkippableTime = 1.5f;
         private string fightData;
 
+        // variables to control data logging and outputting
         public string trainingData;
         public int currentFrameCount;
         public bool dataLogged;
+
+        // concurrentqueue ensures thread safety and synchronisation over queue
+        // semaphore controls message sending without the need for a while loop
+        //  which blocks the main game process
+        public static readonly ConcurrentQueue<string> messageQueue = new();
+        public static readonly SemaphoreSlim messageAvailable = new(0);
 
         void Awake()
         {
@@ -108,7 +120,8 @@ namespace Footsies
                 roundUIAnimator = roundUI.GetComponent<Animator>();
             }
         }
-        
+
+        [Obsolete]
         void FixedUpdate()
         {
             switch(_roundState)
@@ -120,7 +133,9 @@ namespace Footsies
                     // having not been logged
                     // coulve used the preexisting frame count, but cba to
                     // figure it out lmao
+                    // also empties the messagequeue
                     currentFrameCount = 0;
+                    messageQueue.Clear();
                     dataLogged = false;
 
                     break;
@@ -183,6 +198,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         void ChangeRoundState(RoundStateType state)
         {
             _roundState = state;
@@ -255,6 +271,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         void UpdateIntroState()
         {
             var p1Input = GetP1InputData();
@@ -273,6 +290,7 @@ namespace Footsies
             UpdatePushCharacterVsBackground();
         }
 
+        [Obsolete]
         void UpdateFightState()
         {
             var p1Input = GetP1InputData();
@@ -332,11 +350,14 @@ namespace Footsies
             ")isInHitStun(" + fighter2.isInHitStun +
             ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
             ")\n";
+
+            UpdateMessageQueue("Test Message");
+
             }
 
             catch
             {
-                Console.WriteLine("Error appending current frame data to log.");
+                UnityEngine.Debug.Log("Error exporting game state.");
             }
 
         }
@@ -346,6 +367,7 @@ namespace Footsies
 
         }
 
+        [Obsolete]
         void UpdateEndState()
         {
             _fighters.ForEach((f) => f.IncrementActionFrame());
@@ -364,6 +386,7 @@ namespace Footsies
             }
         }
 
+        [Obsolete]
         InputData GetP1InputData()
         {
             if(isReplayingLastRoundInput)
@@ -387,6 +410,7 @@ namespace Footsies
             return p1Input;
         }
 
+        [Obsolete]
         InputData GetP2InputData()
         {
             if (isReplayingLastRoundInput)
@@ -419,6 +443,7 @@ namespace Footsies
             return p2Input;
         }
 
+        [Obsolete]
         private bool IsKOSkipButtonPressed()
         {
             if (InputManager.Instance.GetButton(InputManager.Command.p1Attack))
@@ -468,6 +493,7 @@ namespace Footsies
             });
         }
 
+        [Obsolete]
         void UpdateHitboxHurtboxCollision()
         {
             foreach(var attacker in _fighters)
@@ -600,6 +626,7 @@ namespace Footsies
 
         public int GetFrameAdvantage(bool getP1)
         {
+
             var p1FrameLeft = fighter1.currentActionFrameCount - fighter1.currentActionFrame;
             if (fighter1.isAlwaysCancelable)
                 p1FrameLeft = 0;
@@ -614,10 +641,17 @@ namespace Footsies
                 return p1FrameLeft - p2FrameLeft;
         }
     
-        // writes the training data to the correct file
-        // marks data as having been logged
-        void OutputTrainingData()
+        /* 
+        writes the training data to the correct file
+        marks data as having been logged and labels file with date & time
+        called at each game tick
+        */ 
+        private void OutputTrainingData()
         {
+            // unreachable code past the return, remove this return statement
+            //  to reenable data logging
+            return;
+
             string trainingDataLogPath = "dataLog#" + 
             DateTime.Now.ToString(@"MM-dd-yy--HH-mm-ss") + 
             ".txt";
@@ -634,9 +668,21 @@ namespace Footsies
             }
             catch
             {
-                Console.WriteLine("Unable to write to log file");
+                UnityEngine.Debug.Log("Unable to write to log file");
             }
         }
-    }
 
+        /*
+        updates the message queue to be sent to the server with a message of
+            type string
+        simultaneously releases the "messageAvailable" semaphore
+        */
+        public void UpdateMessageQueue(string message)
+        {
+            // currently sending a dummy message until further notice
+            messageQueue.Enqueue($"Sending message {message} at frame {currentFrameCount}");
+            messageAvailable.Release();
+        }
+
+    }
 }

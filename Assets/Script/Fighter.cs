@@ -122,6 +122,7 @@ namespace Footsies
         /// <param name="fighterData"></param>
         /// <param name="startPosition"></param>
         /// <param name="isPlayerOne"></param>
+        [Obsolete]
         public void SetupBattleStart(FighterData fighterData, Vector2 startPosition, bool isPlayerOne)
         {
             this.fighterData = fighterData;
@@ -195,6 +196,7 @@ namespace Footsies
         /// <summary>
         /// Action request for intro state ()
         /// </summary>
+        [Obsolete]
         public void UpdateIntroAction()
         {
             RequestAction((int)CommonActionID.STAND);
@@ -203,6 +205,7 @@ namespace Footsies
         /// <summary>
         /// Update action request
         /// </summary>
+        [Obsolete]
         public void UpdateActionRequest()
         {
             // If won then just request win animation
@@ -359,6 +362,7 @@ namespace Footsies
             currentActionHitCount++;
         }
 
+        [Obsolete]
         public DamageResult NotifyDamaged(AttackData attackData, Vector2 damagePos)
         {
             bool isGuardBreak = false;
@@ -474,6 +478,7 @@ namespace Footsies
         /// <param name="actionID"></param>
         /// <param name="startFrame"></param>
         /// <returns></returns>
+        [Obsolete]
         public bool RequestAction(int actionID, int startFrame = 0)
         {
             if (isActionEnd)
@@ -548,6 +553,7 @@ namespace Footsies
         /// </summary>
         /// <param name="actionID"></param>
         /// <param name="startFrame"></param>
+        [Obsolete]
         private void SetCurrentAction(int actionID, int startFrame = 0)
         {
             currentActionID = actionID;

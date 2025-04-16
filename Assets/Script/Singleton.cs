@@ -16,6 +16,7 @@ namespace Footsies
 
         private static object _lock = new object();
 
+        [System.Obsolete]
         public static T Instance
         {
             get

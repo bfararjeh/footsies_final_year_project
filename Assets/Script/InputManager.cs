@@ -51,6 +51,7 @@ namespace Footsies
             }
         }
 
+        [System.Obsolete]
         private void Update()
         {
             UpdateGamePad();

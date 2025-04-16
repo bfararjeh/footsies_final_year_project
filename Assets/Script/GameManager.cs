@@ -1,7 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WebSocketClient;
 
 namespace Footsies
 {
@@ -28,6 +29,7 @@ namespace Footsies
         private void Start()
         {
             LoadTitleScene();
+            InitialiseNetworkControl();
         }
 
         private void Update()
@@ -45,20 +47,24 @@ namespace Footsies
         {
             SceneManager.LoadScene((int)SceneIndex.Title);
             currentScene = SceneIndex.Title;
+
         }
 
+        [System.Obsolete]
         public void LoadVsPlayerScene()
         {
             isVsCPU = false;
             LoadBattleScene();
         }
 
+        [System.Obsolete]
         public void LoadVsCPUScene()
         {
             isVsCPU = true;
             LoadBattleScene();
         }
 
+        [System.Obsolete]
         private void LoadBattleScene()
         {
             SceneManager.LoadScene((int)SceneIndex.Battle);
@@ -68,6 +74,31 @@ namespace Footsies
             {
                 SoundManager.Instance.playSE(menuSelectAudioClip);
             }
+        }
+
+        /*
+        the method that launches the Python server and Footsies client
+        called at program start
+        */
+        void InitialiseNetworkControl()
+        {
+            try
+            {
+                Process pythonServer = new();
+                pythonServer.StartInfo.FileName = @"NeuralNetwork\server.py";
+                pythonServer.Start();
+
+                _ = FootsiesClient.Main();
+
+                UnityEngine.Debug.Log("Client and Server Launched");
+            }
+
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.Log("Failed to establish server-client connection.");
+                UnityEngine.Debug.Log($"{ex.Message}");
+            }
+
         }
     }
 

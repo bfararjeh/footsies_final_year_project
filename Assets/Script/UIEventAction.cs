@@ -19,6 +19,7 @@ namespace Footsies
 
         public Action action;
 
+        [System.Obsolete]
         private void Awake()
         {
             if(action == Action.BGMToggle)
@@ -31,6 +32,7 @@ namespace Footsies
             }
         }
 
+        [System.Obsolete]
         public void InvokeAction()
         {
             switch(action)
@@ -52,11 +54,13 @@ namespace Footsies
             }
         }
 
+        [System.Obsolete]
         public void LoadVsCPU()
         {
             GameManager.Instance.LoadVsCPUScene();
         }
 
+        [System.Obsolete]
         public void LoadVsPlayer()
         {
             GameManager.Instance.LoadVsPlayerScene();
@@ -67,6 +71,7 @@ namespace Footsies
             Application.Quit();
         }
 
+        [System.Obsolete]
         public void toggleBGM()
         {
             var isOn = SoundManager.Instance.toggleBGM();
