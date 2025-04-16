@@ -41,7 +41,7 @@ def parse_line(lineToParse):
         as seen in the pattern above and adds it to a np array'''
     dataArray = np.array([])
     for i in range(2):
-        if i == 1:
+        if i == 0:
             currentPlayer = P1matches
         else:
             currentPlayer = P2matches
