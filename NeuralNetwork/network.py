@@ -2,11 +2,12 @@ from preprocessing import pullNormalisedDataFromCSV
 
 from sklearn.model_selection import train_test_split
 
-from tensorflow.keras.models import Sequential # type: ignore
+from tensorflow.keras.models import Sequential, load_model # type: ignore
 from tensorflow.keras.layers import LSTM, Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.callbacks import ModelCheckpoint # type: ignore
 
+import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import numpy as np
@@ -38,6 +39,10 @@ def splitData(data, seqL, step):
     X_train_seq, y_train_seq = createSequences(X_train_raw, seqL, step)
     X_val_seq, y_val_seq = createSequences(X_val_raw, seqL, step)
     X_test_seq, y_test_seq = createSequences(X_test_raw, seqL, step)
+
+    assert X_train_seq.shape[0] > 0, "Training set is empty!"
+    assert X_val_seq.shape[0] > 0, "Validation set is empty!"
+    assert X_test_seq.shape[0] > 0, "Test set is empty!"
 
     return X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq
 
@@ -78,6 +83,10 @@ def createSequences(df, seqL, step):
             sequences.append(sequence.values)
             targets.append(target.values)
     
+    # small two lines of code to ensure sequences created correctly
+    print(f"Created {len(sequences)} sequences with shape {sequences[0].shape if sequences else 'N/A'}")
+    assert len(sequences) == len(targets), "Mismatch between sequences and targets"
+
     return np.array(sequences), np.array(targets)
 
 
@@ -98,6 +107,22 @@ def buildModel(inputShape):
                   metrics=['accuracy'])
 
     return model
+
+
+def loadBestModel():
+
+    loadedModel = load_model("peak.keras")
+    return loadedModel
+
+
+def plot_history(history):
+    plt.plot(history.history['loss'], label='Train Loss')
+    plt.plot(history.history['val_loss'], label='Val Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.title("Training and Validation Loss")
+    plt.show()
 
 
 def main():
@@ -126,6 +151,10 @@ def main():
                                  mode="min", 
                                  verbose=1)
 
+    print(f"Input shape: {inputShape}")
+    print(f"X_train_seq shape: {X_train_seq.shape}")
+    assert inputShape == X_train_seq.shape[1:], "Input shape doesn't match training data"
+
     # Now, train the model with the checkpoint callback
     history = model.fit(X_train_seq, 
                         y_train_seq, 
@@ -133,6 +162,14 @@ def main():
                         batch_size=batchSize, 
                         validation_data=(X_val_seq, y_val_seq), 
                         callbacks=[checkpoint])
+
+    trainingBatchesEst = int(np.ceil(len(X_train_seq) / batchSize))
+    print(f"Expected number of batches per epoch: {trainingBatchesEst}")
+    plot_history(history)
+
+    # loads then evaluates the best model
+    model = load_model("peak.keras")
+    model.evaluate(X_test_seq, y_test_seq, batch_size=batchSize)
 
 
 if __name__ == "__main__":
