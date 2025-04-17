@@ -31,19 +31,19 @@ def normalise(df):
 
     where L is left, R is right, A is attack, and C is currentInput
     """
-    df["P1_left"]   = np.bitwise_and(
+    df["P1_attack"]   = np.bitwise_and(
         np.right_shift(df["P1_currentInput"].astype(int), 2), 1)  # bit 2
     df["P1_right"]  = np.bitwise_and(
         np.right_shift(df["P1_currentInput"].astype(int), 1), 1)  # bit 1
-    df["P1_attack"] = np.bitwise_and(
+    df["P1_left"] = np.bitwise_and(
         df["P1_currentInput"].astype(int), 1)                     # bit 0
     df.drop(columns="P1_currentInput", inplace=True)    # drop the old column
 
-    df["P2_left"]   = np.bitwise_and(
+    df["P2_attack"]   = np.bitwise_and(
         np.right_shift(df["P2_currentInput"].astype(int), 2), 1)  # bit 2
     df["P2_right"]  = np.bitwise_and(
         np.right_shift(df["P2_currentInput"].astype(int), 1), 1)  # bit 1
-    df["P2_attack"] = np.bitwise_and(
+    df["P2_left"] = np.bitwise_and(
         df["P2_currentInput"].astype(int), 1)                     # bit 0
     df.drop(columns="P2_currentInput", inplace=True)    # drop the old column
 
