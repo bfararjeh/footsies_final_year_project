@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import re, os, json
 
-
+'''
+this handles all the normalisation
+'''
 def normalise(df):
 
     # creates a config dictionary for dumping normalisation values later
@@ -39,13 +41,9 @@ def normalise(df):
         df["P1_currentInput"].astype(int), 1)                     # bit 0
     df.drop(columns="P1_currentInput", inplace=True)    # drop the old column
 
-    df["P2_attack"]   = np.bitwise_and(
-        np.right_shift(df["P2_currentInput"].astype(int), 2), 1)  # bit 2
-    df["P2_right"]  = np.bitwise_and(
-        np.right_shift(df["P2_currentInput"].astype(int), 1), 1)  # bit 1
-    df["P2_left"] = np.bitwise_and(
-        df["P2_currentInput"].astype(int), 1)                     # bit 0
-    df.drop(columns="P2_currentInput", inplace=True)    # drop the old column
+    # we drop the p2 input column here as the model should not be able to read
+    #   inputs
+    df.drop(columns="P2_currentInput", inplace=True)
 
 
     # simple normalisation of position value
@@ -105,7 +103,9 @@ def normalise(df):
     # one hot encoding for currentActionID
     df = pd.get_dummies(df,
                         columns=["P1_currentActionID", "P2_currentActionID"],
-                        prefix=["P1_moveID", "P2_moveID"])
+                        prefix=["P1_moveID", "P2_moveID"],
+                        dtype=int)
+    df["P2_moveID_11"] = 0 # because the ai didnt backdash once lmao
 
 
     """
@@ -138,11 +138,19 @@ def normalise(df):
         P1 columns are on one side and P2 on the other
     """
     all_cols = df.columns.tolist()
-
-    p1_cols = [col for col in all_cols if col.startswith("P1")]
     p2_cols = [col for col in all_cols if col.startswith("P2")]
+    other_cols = [col for col in all_cols if col not in p2_cols]
 
-    df = df[p1_cols + p2_cols]
+    df = df[other_cols + p2_cols]
+
+    featureNormalisation(df, config)
+
+
+'''
+this function handles any feature normalisation, such as dropping unecessary
+    columns and creating derived features
+'''
+def featureNormalisation(df, config):
 
     saveConfig(config)
     df.to_csv(os.path.join(os.path.dirname(__file__), 'normalisedOut.csv'))
@@ -160,6 +168,13 @@ def saveConfig(config):
     with open("networkConfig.json", "r+") as configFile:
         json.dump(config, configFile)
     
+
+def pullNormalisedDataFromCSV():
+
+    path = os.path.join(os.path.dirname(__file__), 'normalisedOut.csv')
+    extractedData = pd.read_csv(path, index_col=0)
+
+    return extractedData
 
 
 def main():
