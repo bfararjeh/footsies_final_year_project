@@ -1,11 +1,11 @@
-from preprocessing import pullNormalisedDataFromCSV
-
 from sklearn.model_selection import train_test_split
 
 from tensorflow.keras.models import Sequential, load_model # type: ignore
 from tensorflow.keras.layers import LSTM, Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.callbacks import ModelCheckpoint # type: ignore
+
+from normalisation import Normaliser
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -15,9 +15,13 @@ import os
 
 
 
-def splitData(data, seqL, step):
-
-    df = data
+def splitData(df, seqL, step):
+    '''
+    splits data into multiple sequences to be fed into the network during 
+        training
+    method takes params data, sequence length, and sequence step
+    step is used to determine overlap of sequence windows
+    '''
 
     # X becomes features, y becomes targets.
     # although X becomes features, the target columns are not dropped so they
@@ -48,6 +52,10 @@ def splitData(data, seqL, step):
 
 
 def createSequences(df, seqL, step):
+    '''
+    iterates through the data and returns two created arrays of sequences,
+        one for features and one for targets
+    '''
     sequences = []
     targets = []
     targetColumns = [
@@ -76,7 +84,7 @@ def createSequences(df, seqL, step):
             #   targets
             # .iloc simply grabs data at an index or index range, specifying
             #   the column to grab from
-            sequence = roundData.iloc[i:i+seqL].drop(columns=targetColumns)
+            sequence = roundData.iloc[i:i+seqL].drop(columns=targetColumns + ["round_ID", "frame_number"])
             target = roundData.iloc[i:i+seqL][targetColumns]
 
             # this pulls the values from the iloc methods.
@@ -103,8 +111,8 @@ def buildModel(inputShape):
 
     # compiling model with adam, binary cross-entropy, and accuracy metric
     model.compile(optimizer=Adam(), 
-                  loss='binary_crossentropy', 
-                  metrics=['accuracy'])
+                    loss='binary_crossentropy', 
+                    metrics=['accuracy'])
 
     return model
 
@@ -128,7 +136,8 @@ def plot_history(history):
 def main():
 
     # pulls data, adjusts hyperparams such as sequence length and overlap.
-    df = pullNormalisedDataFromCSV()
+    myNormaliser = Normaliser()
+    df = myNormaliser.pullNormalisedDataFromCSV()
     sequenceLength = 20
     sequenceOverlap = 1
     epochs = 10
@@ -136,7 +145,7 @@ def main():
 
     # calls for data splitting
     X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
-        data=df,
+        df=df,
         seqL=sequenceLength,
         step=sequenceOverlap)
     
@@ -146,16 +155,16 @@ def main():
     inputShape = (X_train_seq.shape[1], X_train_seq.shape[2])
     model = buildModel(inputShape=inputShape)
     checkpoint = ModelCheckpoint("peak.keras", 
-                                 save_best_only=True, 
-                                 monitor="val_loss", 
-                                 mode="min", 
-                                 verbose=1)
+                                    save_best_only=True, 
+                                    monitor="val_loss", 
+                                    mode="min", 
+                                    verbose=1)
 
     print(f"Input shape: {inputShape}")
     print(f"X_train_seq shape: {X_train_seq.shape}")
     assert inputShape == X_train_seq.shape[1:], "Input shape doesn't match training data"
 
-    # Now, train the model with the checkpoint callback
+    # train the model with the checkpoint callback
     history = model.fit(X_train_seq, 
                         y_train_seq, 
                         epochs=epochs, 

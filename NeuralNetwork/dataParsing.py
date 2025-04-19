@@ -7,16 +7,17 @@ dummy line for testing
 49: P1_INFO:currentInput(1)position(-1.16, 0.00)velocity_x(0)isDead(False)vitalHealth(1)guardHealth(3)currentActionID(105)currentActionFrame(10)currentActionFrameCount(21)isAlwaysCancelable(False)currentActionHitCount(1)currentHitStunFrame(0)isInHitStun(False)isAlwaysCancelable(False)P2_INFO:currentInput(2)position(0.93, 0.00)velocity_x(-0.5)isDead(False)vitalHealth(1)guardHealth(2)currentActionID(305)currentActionFrame(7)currentActionFrameCount(15)isAlwaysCancelable(False)currentActionHitCount(0)currentHitStunFrame(0)isInHitStun(False)isAlwaysCancelable(False)
 '''
 
-def parse_line(lineToParse):
-
+def parse_line(rawLine):
+    
     # splits the frame count as it only needs to be read once
-    frame_match = re.match(r"(\d+): ", lineToParse)
+    frame_match = re.match(r"(\d+): ", rawLine)
     frame_number = int(frame_match.group(1))
 
     # splits the data into the p1 half and p2 half
-    P1_data = lineToParse[lineToParse.index("P1_INFO:"):
-                          lineToParse.index("P2_INFO:")]
-    P2_data = lineToParse[lineToParse.index("P2_INFO:"):]
+    P1_data = rawLine[rawLine.index("P1_INFO:"):
+                          rawLine.index("P2_INFO:")]
+    P2_data = rawLine[rawLine.index("P2_INFO:"):]
+
 
     '''defines a pattern with regex formatting to pull the values for each of
       the variables'''
