@@ -22,8 +22,6 @@ async def message_handler(websocket):
             output = footsiesAI.predict()
             print(f"Predict: {(time.perf_counter() - start)*1000:.2f}ms")
 
-            
-
             await websocket.send(str(output))
     
     # exception handling

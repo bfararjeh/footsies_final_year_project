@@ -1,7 +1,7 @@
 from dataParsing import pullDataFromCSV
 import pandas as pd
 import numpy as np
-import re, os, json
+import os, json
 
 class Normaliser():
     def __init__(self):

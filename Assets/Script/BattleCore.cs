@@ -306,7 +306,7 @@ namespace Footsies
 
             if (networkActive == 1)
             {
-                p1Input.input = GetCurrentNetworkInput();
+                p1Input.input = networkInput;
                 fighter1.UpdateInput(p1Input);
             }
 
@@ -455,11 +455,6 @@ namespace Footsies
 
             return p2Input;
         }
-
-        private int GetCurrentNetworkInput()
-        {
-            return networkInput;
-        }  
 
         [Obsolete]
         private bool IsKOSkipButtonPressed()

@@ -16,10 +16,6 @@ class FootsiesPredictor():
         self.myNormaliser = Normaliser()
 
 
-    def padBuffer(self, firstFrame):
-        self.buffer = [firstFrame] * self.seqL
-
-
     def prepareData(self, rawLine):
         _, parsedLine = parse_line(rawLine)
         normalisedFrame = self.myNormaliser.normaliseLine(parsedLine)
@@ -54,7 +50,3 @@ class FootsiesPredictor():
             finalOutput = int(binString, 2)
             
         return finalOutput
-
-
-    def returnMessage(self):
-        pass
