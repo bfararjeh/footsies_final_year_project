@@ -10,7 +10,6 @@ using TMPro;
 
 namespace WebSocketClient
 {
-
     /// <summary>
     /// This class controls the initialisation of the Footsies client to
     ///     interact with the Python server.
@@ -107,8 +106,9 @@ namespace WebSocketClient
                     {
                         string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         UnityEngine.Debug.Log($"Received: {message}");
-                        BattleCore.networkInput = Int32.Parse(message);
 
+                        // sets current network input to the recieved message
+                        BattleCore.networkInput = Int32.Parse(message);
                     }
                     else if (result.MessageType == WebSocketMessageType.Close)
                     {

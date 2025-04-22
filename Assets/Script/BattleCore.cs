@@ -98,6 +98,8 @@ namespace Footsies
         public string newGameState;
         public int currentFrameCount;
         public bool dataLogged;
+
+        // variables for handling network inputs
         public static int networkActive = 0;
         public static int networkInput = 0;
 
@@ -692,11 +694,9 @@ namespace Footsies
         */
         public void UpdateMessageQueue(string message)
         {
-            if (frameCount % 4 == 0){
-                // currently sending a dummy message until further notice
-                messageQueue.Enqueue(message);
-                messageAvailable.Release();}
-                }
+            messageQueue.Enqueue(message);
+            messageAvailable.Release();}
+
 
     }
 }

@@ -280,7 +280,7 @@ def main():
     '''
     Function that will preprocess all data.
     To be used only by the developer.
-    Calls when class is run as file and preprocesses all data
+    Calls when class is run as file and preprocesses all data.
     '''
 
     myPreprocessor = DataPreprocessor()

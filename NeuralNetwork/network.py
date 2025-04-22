@@ -114,11 +114,10 @@ def buildModel(inputShape):
     return model
 
 def loadBestModel():
-
     loadedModel = load_model("peak.keras")
     return loadedModel
 
-def plot_history(history):
+def plotHistory(history):
     plt.plot(history.history['loss'], label='Train Loss')
     plt.plot(history.history['val_loss'], label='Val Loss')
     plt.xlabel('Epoch')
@@ -130,29 +129,41 @@ def plot_history(history):
 def main():
 
     # pulls data, adjusts hyperparams such as sequence length and overlap.
-    myNormaliser = DataPreprocessor()
-    df = myNormaliser.pullDataset()
+    try:
+        myNormaliser = DataPreprocessor()
+        df = myNormaliser.pullDataset()
+    except Exception as e:
+        print("PreProcessor could not be loaded.")
+        print(e)
+
     sequenceLength = 20
     sequenceOverlap = 1
     epochs = 10
     batchSize = 64
 
     # calls for data splitting
-    X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
-        df=df,
-        seqL=sequenceLength,
-        step=sequenceOverlap)
+    try:
+        X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
+            df=df,
+            seqL=sequenceLength,
+            step=sequenceOverlap)
+    except Exception as e:
+        print("network.splitData() could not be run.")
+        print(e)
     
     # this takes the shape of the data gathered, so frames per sequence and
     #   features per timestep
     # shape[0] is equal to total sequences
-    inputShape = (X_train_seq.shape[1], X_train_seq.shape[2])
-    model = buildModel(inputShape=inputShape)
-    checkpoint = ModelCheckpoint("peak.keras", 
-                                    save_best_only=True, 
-                                    monitor="val_loss", 
-                                    mode="min", 
-                                    verbose=1)
+    try:
+        inputShape = (X_train_seq.shape[1], X_train_seq.shape[2])
+        model = buildModel(inputShape=inputShape)
+        checkpoint = ModelCheckpoint("FootsiesNeuralNetwork.keras", 
+                                        save_best_only=True, 
+                                        monitor="val_loss", 
+                                        mode="min", 
+                                        verbose=1)
+    except Exception as e:
+        print(f"Error creating model: {e}")
 
     print(f"Input shape: {inputShape}")
     print(f"X_train_seq shape: {X_train_seq.shape}")
@@ -168,10 +179,10 @@ def main():
 
     trainingBatchesEst = int(np.ceil(len(X_train_seq) / batchSize))
     print(f"Expected number of batches per epoch: {trainingBatchesEst}")
-    plot_history(history)
+    plotHistory(history)
 
     # loads then evaluates the best model
-    model = load_model("peak.keras")
+    model = load_model("FootsiesNeuralNetwork.keras")
     model.evaluate(X_test_seq, y_test_seq, batch_size=batchSize)
 
 
