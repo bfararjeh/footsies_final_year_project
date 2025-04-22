@@ -5,14 +5,13 @@ from tensorflow.keras.layers import LSTM, Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.callbacks import ModelCheckpoint # type: ignore
 
-from normalisation import Normaliser
+from preProcessing import DataPreprocessor
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import numpy as np
 import os
-
 
 
 def splitData(df, seqL, step):
@@ -49,7 +48,6 @@ def splitData(df, seqL, step):
     assert X_test_seq.shape[0] > 0, "Test set is empty!"
 
     return X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq
-
 
 def createSequences(df, seqL, step):
     '''
@@ -97,7 +95,6 @@ def createSequences(df, seqL, step):
 
     return np.array(sequences), np.array(targets)
 
-
 def buildModel(inputShape):
     
     # sequential model, 1 input, 1 output, 2 hidden layers
@@ -116,12 +113,10 @@ def buildModel(inputShape):
 
     return model
 
-
 def loadBestModel():
 
     loadedModel = load_model("peak.keras")
     return loadedModel
-
 
 def plot_history(history):
     plt.plot(history.history['loss'], label='Train Loss')
@@ -132,12 +127,11 @@ def plot_history(history):
     plt.title("Training and Validation Loss")
     plt.show()
 
-
 def main():
 
     # pulls data, adjusts hyperparams such as sequence length and overlap.
-    myNormaliser = Normaliser()
-    df = myNormaliser.pullNormalisedDataFromCSV()
+    myNormaliser = DataPreprocessor()
+    df = myNormaliser.pullDataset()
     sequenceLength = 20
     sequenceOverlap = 1
     epochs = 10

@@ -82,9 +82,13 @@ class DataPreprocessor():
         P1Matches = np.array([])
         P2Matches = np.array([])
 
-        for pattern in self.patternList:
-            P1Matches = np.append(P1Matches, (re.search(pattern, P1Data)).group(1))
-            P2Matches = np.append(P2Matches, (re.search(pattern, P2Data)).group(1))
+        try:
+            for pattern in self.patternList:
+                P1Matches = np.append(P1Matches, (re.search(pattern, P1Data)).group(1))
+                P2Matches = np.append(P2Matches, (re.search(pattern, P2Data)).group(1))
+        except Exception as e:
+            print("Mismatch between client message and server parsing." + \
+                  "\n Ensure that DataPreprocessor.patternList is updated.")
 
         return frameNumber, P1Matches, P2Matches
 
@@ -254,6 +258,23 @@ class DataPreprocessor():
 
         self.normaliseDataset(self.parseDataset(datasetPath), configPath)
 
+    def normaliseLiveInput(self, rawString):
+        '''
+        Normalises a single line and returns the value.
+        Argument type: string
+        Return type: dataframe
+        '''
+        
+        frameNumber, P1Matches, P2Matches = self.parseLine(rawString)
+        parsedLine = np.append(0, frameNumber)
+        parsedLine = np.append(parsedLine, [P1Matches, P2Matches])
+
+        df = pd.DataFrame(
+            data=np.asarray([parsedLine]),
+            columns=self.parsedColumns)
+        
+        return self.normalise(df)
+    
 
 def main():
     '''

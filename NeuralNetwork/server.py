@@ -11,12 +11,8 @@ async def message_handler(websocket):
         async for message in websocket:
 
             start = time.perf_counter()
-            normData = footsiesAI.prepareData(message)
+            footsiesAI.prepareData(message)
             print(f"PrepareData: {(time.perf_counter() - start)*1000:.2f}ms")
-
-            start = time.perf_counter()
-            footsiesAI.addFrame(normData)
-            print(f"AddFrame: {(time.perf_counter() - start)*1000:.2f}ms")
 
             start = time.perf_counter()
             output = footsiesAI.predict()
@@ -48,7 +44,7 @@ if __name__ == "__main__":
 
         footsiesAI = FootsiesPredictor(modelPath="peak.keras",
                                        sequenceLength=20,
-                                       features=46)
+                                       features=44)
         
         
     except Exception as e:
