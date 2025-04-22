@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Security;
 using System.Threading;
 using UnityEngine;
+using System.Linq;
 
 // disables unreadable code warning: just so i can comment out the output
 //  training data function while i test
@@ -94,14 +95,20 @@ namespace Footsies
 
         // variables to control data logging and outputting
         public string trainingData;
+        public string newGameState;
         public int currentFrameCount;
         public bool dataLogged;
+
+        // variables for handling network inputs
+        public static int networkActive = 0;
+        public static int networkInput = 0;
 
         // concurrentqueue ensures thread safety and synchronisation over queue
         // semaphore controls message sending without the need for a while loop
         //  which blocks the main game process
         public static readonly ConcurrentQueue<string> messageQueue = new();
-        public static readonly SemaphoreSlim messageAvailable = new(0);
+        public static readonly SemaphoreSlim messageAvailable = new(0, int.MaxValue);
+        
 
         void Awake()
         {
@@ -299,6 +306,13 @@ namespace Footsies
             fighter1.UpdateInput(p1Input);
             fighter2.UpdateInput(p2Input);
 
+            if (networkActive == 1)
+            {
+                p1Input.input = networkInput;
+                fighter1.UpdateInput(p1Input);
+            }
+
+
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
             _fighters.ForEach((f) => f.UpdateActionRequest());
@@ -315,8 +329,7 @@ namespace Footsies
             try{
 
             // appends data to trainingData string
-            trainingData = trainingData +
-            currentFrameCount + ": " +
+            newGameState = currentFrameCount + ": " +
             "P1_INFO:" + 
             "currentInput(" + p1Input.input +
             ")position" + fighter1.position +
@@ -351,7 +364,9 @@ namespace Footsies
             ")isAlwaysCancelable(" + fighter2.isAlwaysCancelable +
             ")\n";
 
-            UpdateMessageQueue("Test Message");
+            trainingData += newGameState;
+
+            UpdateMessageQueue(newGameState);
 
             }
 
@@ -679,10 +694,9 @@ namespace Footsies
         */
         public void UpdateMessageQueue(string message)
         {
-            // currently sending a dummy message until further notice
-            messageQueue.Enqueue($"Sending message {message} at frame {currentFrameCount}");
-            messageAvailable.Release();
-        }
+            messageQueue.Enqueue(message);
+            messageAvailable.Release();}
+
 
     }
 }

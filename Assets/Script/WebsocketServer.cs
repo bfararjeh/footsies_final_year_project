@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Footsies;
+using TMPro;
 
 namespace WebSocketClient
 {
-
     /// <summary>
     /// This class controls the initialisation of the Footsies client to
     ///     interact with the Python server.
@@ -38,6 +40,8 @@ namespace WebSocketClient
                     await client.ConnectAsync(serverUri, CancellationToken.None);
                     UnityEngine.Debug.Log("Connected to the server");
 
+                    BattleCore.networkActive = 1;
+
                     // Start send and receive tasks in parallel
                     var receiveTask = ReceiveMessagesAsync(client);
                     var sendTask = SendMessagesAsync(client);
@@ -58,6 +62,7 @@ namespace WebSocketClient
             }
 
             UnityEngine.Debug.Log("Client shut down");
+            BattleCore.networkActive = 0;
         }
 
         private static async Task SendMessagesAsync(ClientWebSocket client)
@@ -101,10 +106,14 @@ namespace WebSocketClient
                     {
                         string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         UnityEngine.Debug.Log($"Received: {message}");
+
+                        // sets current network input to the recieved message
+                        BattleCore.networkInput = Int32.Parse(message);
                     }
                     else if (result.MessageType == WebSocketMessageType.Close)
                     {
                         await client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Server closed connection", CancellationToken.None);
+                        BattleCore.networkActive = 0;
                         break;
                     }
                 }

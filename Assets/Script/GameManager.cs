@@ -77,7 +77,7 @@ namespace Footsies
 
         /*
         the method that launches the Python server and Footsies client
-        called at program start
+        called at program start via "Start()" method
         */
         void InitialiseNetworkControl()
         {
