@@ -79,6 +79,7 @@ class FootsiesPredictor():
                 (1, self.seqL, self.features))
             
             # create prediction with model
+            # prediction order is [left, right, attack]
             prediction = self.model(currentSequence)[0, -1]
 
             threshold = 0.5         # input threshold

@@ -1,9 +1,9 @@
 from sklearn.model_selection import train_test_split
 
 from tensorflow.keras.models import Sequential, load_model # type: ignore
-from tensorflow.keras.layers import LSTM, Dense, Input # type: ignore
+from tensorflow.keras.layers import LSTM, Dropout,  Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
-from tensorflow.keras.callbacks import ModelCheckpoint # type: ignore
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard # type: ignore
 
 from preProcessing import DataPreprocessor
 
@@ -11,8 +11,10 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import numpy as np
-import os
+import os, json, datetime
 
+# run this command to view tensorboard logs
+# python -m tensorboard.main --logdir="C:\Users\bahaf\Documents\Final Year Project\footsies_final_year_project\NeuralNetwork\experimentLogs"
 
 def splitData(df, seqL, step):
     '''
@@ -98,11 +100,12 @@ def createSequences(df, seqL, step):
 def buildModel(inputShape):
     
     # sequential model, 1 input, 1 output, 2 hidden layers
-    # LSTM layer with 64 units, dense with 32, and dense with 3
+    # LSTM layer with 64 units, 0.3 dropout layer, dense with 32, and dense with 3
     # last dense layer is output layer w sigmoid function
     model = Sequential()
     model.add(Input(shape=inputShape))
     model.add(LSTM(64, return_sequences=True))
+    model.add(Dropout(0.3))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(3, activation='sigmoid'))
 
@@ -126,7 +129,99 @@ def plotHistory(history):
     plt.title("Training and Validation Loss")
     plt.show()
 
+def runExperiment(experimentName):
+    '''
+    this function is for experimental model building, used for testing different
+        configurations.
+    '''
+
+    # defines path of config file, model, and log
+    experimentPath = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentConfigs\\{experimentName}.json")
+    
+    logPath = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentLogs\\{experimentName}\\{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}")
+    
+    print(f"Running experiment at path: {experimentPath}", end="\n")
+
+
+    # reads experiment config
+    try:
+        with open(os.path.join("experimentConfigs/", experimentPath)) as config:
+            config = json.load(config)
+
+    except Exception as e:
+        print(f"Unable to read config file: {e}")
+
+
+    # pulls data, adjusts hyperparams such as sequence length and overlap.
+    try:
+        myNormaliser = DataPreprocessor()
+        df = myNormaliser.pullDataset()
+    except Exception as e:
+        print("PreProcessor could not be loaded.")
+        print(e)
+
+
+    # calls for data splitting
+    try:
+        X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
+            df=df,
+            seqL=config["training"]["sequence_length"],
+            step=config["training"]["step"])
+    except Exception as e:
+        print(f"Data could not be split: {e}")
+
+
+    # this takes the shape of the data gathered, so frames per sequence and
+    #   features per timestep
+    # shape[0] is equal to total sequences
+    try:
+        inputShape = (X_train_seq.shape[1], X_train_seq.shape[2])
+        model = Sequential()
+        model.add(Input(shape=inputShape))
+        model.add(LSTM(config["model"]["LSTM_unit_size"], return_sequences=True))
+        model.add(Dropout(config["model"]["dropout_rate"]))
+        model.add(Dense(config["model"]["dense_unit_size"], activation='relu'))
+        model.add(Dense(3, activation='sigmoid'))
+
+        newAdam = Adam(learning_rate=config["model"]["learning_rate"])
+
+        # compiling model with adam, binary cross-entropy, and accuracy metric
+        model.compile(optimizer=newAdam, 
+                        loss='binary_crossentropy', 
+                        metrics=['accuracy'])
+        myTensorboard = TensorBoard(log_dir=logPath, histogram_freq = 1)
+        
+    except Exception as e:
+        print(f"Error creating model: {e}")
+
+
+    print(f"Input shape: {inputShape}")
+    print(f"X_train_seq shape: {X_train_seq.shape}")
+    assert inputShape == X_train_seq.shape[1:], "Input shape doesn't match training data"
+
+
+    trainingBatchesEst = int(np.ceil(len(X_train_seq) / config["training"]["batch_size"]))
+    print(f"Expected number of batches per epoch: {trainingBatchesEst}")
+    # train the model with the tensorboard callback
+    history = model.fit(X_train_seq, 
+                        y_train_seq, 
+                        epochs=config["training"]["epochs"], 
+                        batch_size=config["training"]["batch_size"], 
+                        validation_data=(X_val_seq, y_val_seq), 
+                        callbacks=[myTensorboard])
+    model.evaluate(X_test_seq, y_test_seq, batch_size=config["training"]["batch_size"])
+    plotHistory(history)
+
 def main():
+    '''
+    this function is the MAIN model building function. this is the final model,
+        results from experiments should be used to change this function
+        specifically.
+    '''
 
     # pulls data, adjusts hyperparams such as sequence length and overlap.
     try:
@@ -150,7 +245,8 @@ def main():
     except Exception as e:
         print("network.splitData() could not be run.")
         print(e)
-    
+
+
     # this takes the shape of the data gathered, so frames per sequence and
     #   features per timestep
     # shape[0] is equal to total sequences
@@ -187,4 +283,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    experimentName = "baseline"
+    runExperiment(experimentName)
