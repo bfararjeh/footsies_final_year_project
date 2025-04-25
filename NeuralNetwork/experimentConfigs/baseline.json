@@ -4,12 +4,18 @@
       "LSTM_unit_size": 64,
       "dense_unit_size": 32,
       "dropout_rate": 0.3,
-      "learning_rate": 0.001
+      "learning_rate": 0.001,
+      "early_stopping_patience":3
     },
     "training": {
       "batch_size": 64,
-      "epochs": 10,
+      "epochs": 15,
       "sequence_length": 20,
       "step": 1
+    },
+    "feature_engineering": {
+      "enable_isDead": 1,
+      "enable_velocity": 1,
+      "enable_relativeDistance": 0
     }
   }

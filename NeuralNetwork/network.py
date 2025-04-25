@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, load_model # type: ignore
 from tensorflow.keras.layers import LSTM, Dropout,  Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
-from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard # type: ignore
+from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping # type: ignore
 
 from preProcessing import DataPreprocessor
 
@@ -133,19 +133,25 @@ def runExperiment(experimentName):
     '''
     this function is for experimental model building, used for testing different
         configurations.
+    this and the main method are messy, but they dont need to be clean. would
+        rather one large function than many smaller ones in this specific
+        instance
     '''
 
     # defines path of config file, model, and log
     experimentPath = os.path.join(
         os.path.dirname(__file__),
         f"experimentConfigs\\{experimentName}.json")
+
+    experimentModel = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentModels\\{experimentName}.keras")
     
     logPath = os.path.join(
         os.path.dirname(__file__),
         f"experimentLogs\\{experimentName}\\{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}")
     
     print(f"Running experiment at path: {experimentPath}", end="\n")
-
 
     # reads experiment config
     try:
@@ -155,7 +161,6 @@ def runExperiment(experimentName):
     except Exception as e:
         print(f"Unable to read config file: {e}")
 
-
     # pulls data, adjusts hyperparams such as sequence length and overlap.
     try:
         myNormaliser = DataPreprocessor()
@@ -164,6 +169,16 @@ def runExperiment(experimentName):
         print("PreProcessor could not be loaded.")
         print(e)
 
+    # modifying the dataset according to the config
+    try:
+        if config["feature_engineering"]["enable_isDead"] != 1:
+            df.drop(columns=["P1_isDead","P2_isDead"])
+        if config["feature_engineering"]["enable_velocity"] != 1:
+            df.drop(columns=["P1_velocity_norm","P2_velocity_norm"])
+        if config["feature_engineering"]["enable_relativeDistance"] == 1:
+            df["relative_distance"] = df["P2_position_norm"] - df["P1_position_norm"]
+    except Exception as e:
+        print(f"Unable to perform feature engineering: {e}")
 
     # calls for data splitting
     try:
@@ -174,7 +189,6 @@ def runExperiment(experimentName):
     except Exception as e:
         print(f"Data could not be split: {e}")
 
-
     # this takes the shape of the data gathered, so frames per sequence and
     #   features per timestep
     # shape[0] is equal to total sequences
@@ -184,7 +198,7 @@ def runExperiment(experimentName):
         model.add(Input(shape=inputShape))
         model.add(LSTM(config["model"]["LSTM_unit_size"], return_sequences=True))
         model.add(Dropout(config["model"]["dropout_rate"]))
-        model.add(Dense(config["model"]["dense_unit_size"], activation='relu'))
+        model.add(Dense(config["model"]["dense_unit_size"], activation='relu', dtype="float32"))
         model.add(Dense(3, activation='sigmoid'))
 
         newAdam = Adam(learning_rate=config["model"]["learning_rate"])
@@ -193,28 +207,28 @@ def runExperiment(experimentName):
         model.compile(optimizer=newAdam, 
                         loss='binary_crossentropy', 
                         metrics=['accuracy'])
-        myTensorboard = TensorBoard(log_dir=logPath, histogram_freq = 1)
-        
     except Exception as e:
         print(f"Error creating model: {e}")
 
+    tensorboard = TensorBoard(log_dir=logPath, histogram_freq = 1)
+    checkpoint = ModelCheckpoint(experimentModel, 
+                                    save_best_only=True, 
+                                    monitor="val_loss", 
+                                    mode="min", 
+                                    verbose=1)
+    earlyStop = EarlyStopping(monitor='val_loss',
+                              patience=config["model"]["early_stopping_patience"],
+                              restore_best_weights=True,
+                              verbose=1)
 
-    print(f"Input shape: {inputShape}")
-    print(f"X_train_seq shape: {X_train_seq.shape}")
-    assert inputShape == X_train_seq.shape[1:], "Input shape doesn't match training data"
-
-
-    trainingBatchesEst = int(np.ceil(len(X_train_seq) / config["training"]["batch_size"]))
-    print(f"Expected number of batches per epoch: {trainingBatchesEst}")
     # train the model with the tensorboard callback
-    history = model.fit(X_train_seq, 
-                        y_train_seq, 
-                        epochs=config["training"]["epochs"], 
-                        batch_size=config["training"]["batch_size"], 
-                        validation_data=(X_val_seq, y_val_seq), 
-                        callbacks=[myTensorboard])
-    model.evaluate(X_test_seq, y_test_seq, batch_size=config["training"]["batch_size"])
-    plotHistory(history)
+    model.fit(X_train_seq, 
+              y_train_seq, 
+              epochs=config["training"]["epochs"], 
+              batch_size=config["training"]["batch_size"], 
+              validation_data=(X_val_seq, y_val_seq), 
+              callbacks=[tensorboard, checkpoint, earlyStop])
+
 
 def main():
     '''
@@ -283,5 +297,12 @@ def main():
 
 
 if __name__ == "__main__":
-    experimentName = "baseline"
-    runExperiment(experimentName)
+
+    configDir = os.path.join(os.path.dirname(__file__),"experimentConfigs")
+    configFiles = [f for f in os.listdir(configDir) if f.endswith(".json")]
+
+    for config in configFiles:
+        currentConfig = config[:config.index(".json")]
+        runExperiment(currentConfig)
+
+    # main()
