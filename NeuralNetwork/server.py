@@ -61,7 +61,7 @@ if __name__ == "__main__":
         footsiesAI = FootsiesPredictor(modelPath="FootsiesNeuralNetwork.keras",
                                        sequenceLength=20,
                                        features=14,
-                                       predictIntervals=4)
+                                       predictIntervals=2)
         
         asyncio.run(control_server())
 

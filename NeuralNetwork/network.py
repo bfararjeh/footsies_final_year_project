@@ -112,15 +112,15 @@ def buildModel(inputShape):
     # last dense layer is output layer w sigmoid function
     model = Sequential()
     model.add(Input(shape=inputShape))
-    model.add(LSTM(64, return_sequences=True))
-    model.add(Dropout(0.3))
-    model.add(Dense(32, activation='relu'))
+    model.add(LSTM(32, return_sequences=True))
+    model.add(Dropout(0.5))
+    model.add(Dense(16, activation='relu'))
     model.add(Dense(3, activation='sigmoid'))
 
     # compiling model with adam, binary cross-entropy, and accuracy metric
     model.compile(optimizer=Adam(), 
                     loss='binary_crossentropy', 
-                    metrics=['accuracy'])
+                    metrics=["accuracy"])
 
     return model
 
@@ -237,7 +237,6 @@ def runExperiment(experimentName):
               validation_data=(X_val_seq, y_val_seq), 
               callbacks=[tensorboard, checkpoint, earlyStop])
 
-
 def main():
     '''
     this function is the MAIN model building function. this is the final model,
@@ -255,8 +254,8 @@ def main():
 
     sequenceLength = 20
     sequenceOverlap = 1
-    epochs = 10
-    batchSize = 64
+    epochs = 20
+    batchSize = 32
 
     # calls for data splitting
     try:
@@ -280,6 +279,10 @@ def main():
                                         monitor="val_loss", 
                                         mode="min", 
                                         verbose=1)
+        earlyStop = EarlyStopping(monitor='val_loss',
+                                patience=6,
+                                restore_best_weights=True,
+                                verbose=1)
     except Exception as e:
         print(f"Error creating model: {e}")
 
@@ -293,7 +296,7 @@ def main():
                         epochs=epochs, 
                         batch_size=batchSize, 
                         validation_data=(X_val_seq, y_val_seq), 
-                        callbacks=[checkpoint])
+                        callbacks=[checkpoint, earlyStop])
 
     trainingBatchesEst = int(np.ceil(len(X_train_seq) / batchSize))
     print(f"Expected number of batches per epoch: {trainingBatchesEst}")

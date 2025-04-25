@@ -139,10 +139,10 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 36
+    x: 1305
+    y: 87
     width: 1247
-    height: 1325
+    height: 1301
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -197,9 +197,9 @@ MonoBehaviour:
       x: 0
       y: 21
       width: 1247
-      height: 1287
+      height: 1280
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 623.5, y: 643.5}
+    m_Translation: {x: 623.5, y: 640}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -207,12 +207,12 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -623.5
-      y: -643.5
+      y: -640
       width: 1247
-      height: 1287
+      height: 1280
     m_MinimalGUI: 1
   m_defaultScale: 1
-  m_LastWindowPixelSize: {x: 1247, y: 1308}
+  m_LastWindowPixelSize: {x: 1247, y: 1301}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000

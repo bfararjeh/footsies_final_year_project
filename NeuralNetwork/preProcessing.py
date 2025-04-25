@@ -291,7 +291,7 @@ def main():
 
     myPreprocessor = DataPreprocessor()
 
-    datasetName = r"TrainingData\DATASET#2-NEW_AI"
+    datasetName = r"TrainingData\DATASET#3-COMBINED"
     datasetPath = os.path.join(
         os.path.dirname(os.path.dirname(__file__)), 
         datasetName)
