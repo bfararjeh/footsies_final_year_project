@@ -23,7 +23,9 @@ class DataPreprocessor():
     def __init__(self):
         
         try:
-            with open("networkConfig.json", "r") as rawConfig:
+            configPath = os.path.join(
+                os.path.dirname(os.path.dirname(__file__)), "networkConfig.json")
+            with open(configPath, "r") as rawConfig:
                 self.config = json.load(rawConfig)
 
                 self.p1min_pos, self.p1max_pos = self.config["minmax"]["P1_position"]
@@ -168,22 +170,26 @@ class DataPreprocessor():
         df["P1_guardpoint_norm"] = round(df["P1_guardHealth"].astype(float) / 3, 3)
         df["P2_guardpoint_norm"] = round(df["P2_guardHealth"].astype(float) / 3, 3)
 
-        # one hot encoding for currentActionID
-        df = pd.get_dummies(df,
-                            columns=["P1_currentActionID", "P2_currentActionID"],
-                            prefix=["P1_moveID", "P2_moveID"],
-                            dtype=int)
-        df["P2_moveID_11"] = 0 # because the ai didnt backdash once lmao
+        p1AllMoves = [0, 1, 10, 11, 100, 105, 110, 115, 2, 200, 301, 305, 306, 310, 350, 500]
+        p2AllMoves = p1AllMoves
+
+        p1IDMap = {int(moveID): i / 16 for i, moveID in enumerate(p1AllMoves)}
+        p2IDMap = {int(moveID): i / 16 for i, moveID in enumerate(p2AllMoves)}
+
+        df["P1_move_index_norm"] = df["P1_currentActionID"].astype(int).map(p1IDMap)
+        df["P2_move_index_norm"] = df["P2_currentActionID"].astype(int).map(p2IDMap)
 
         # drops all replaced/unecessary columns
         df.drop(columns=["P1_currentInput",
                          "P1_position",
                          "P1_velocity_x",
                          "P1_guardHealth",
+                         "P1_currentActionID",
                          "P2_currentInput",
                          "P2_position",
                          "P2_velocity_x",
-                         "P2_guardHealth"], inplace=True, errors="ignore")
+                         "P2_guardHealth",
+                         "P2_currentActionID"], inplace=True, errors="ignore")
         
         # moves all p2 columns to right side
         allColumns = df.columns.tolist()

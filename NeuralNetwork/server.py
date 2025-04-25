@@ -60,7 +60,7 @@ if __name__ == "__main__":
         # creates instance of the predictor class
         footsiesAI = FootsiesPredictor(modelPath="FootsiesNeuralNetwork.keras",
                                        sequenceLength=20,
-                                       features=44,
+                                       features=14,
                                        predictIntervals=4)
         
         asyncio.run(control_server())

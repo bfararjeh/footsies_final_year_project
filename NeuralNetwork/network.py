@@ -30,15 +30,23 @@ def splitData(df, seqL, step):
     X = df
     y = df[["P1_left", "P1_right", "P1_attack"]]
 
+
+    # splits dataframes to unique rounds, to ensure rounds stay together
     # splits the data 70/30 into a feature and target training and testing
     # random state = 17 ensures the split is always the same
-    # note: y train, val, and raw are never actually accessed since these 
-    #   targets are created in the createSequences function, they're just here
-    #   since 
-    X_train_raw, X_temp, y_train_raw, y_temp = train_test_split(X, y, test_size=0.3, random_state=17)
+    unique_round_ids = df['round_ID'].unique()
+    train_ids, temp_ids = train_test_split(unique_round_ids, test_size=0.3, random_state=17)
+    val_ids, test_ids = train_test_split(temp_ids, test_size=0.5, random_state=17)
 
-    # split the what was 30 percent remaining into 50/50
-    X_val_raw, X_test_raw, y_val_raw, y_test_raw = train_test_split(X_temp, y_temp, test_size=0.5, random_state=17)
+    # alligns target and features to the split round IDs
+    X_train_raw = X[X['round_ID'].isin(train_ids)]
+    y_train_raw = y[X['round_ID'].isin(train_ids)]
+
+    X_val_raw = X[X['round_ID'].isin(val_ids)]
+    y_val_raw = y[X['round_ID'].isin(val_ids)]
+
+    X_test_raw = X[X['round_ID'].isin(test_ids)]
+    y_test_raw = y[X['round_ID'].isin(test_ids)]
 
     # create sequences for training, validation, and test sets
     X_train_seq, y_train_seq = createSequences(X_train_raw, seqL, step)
@@ -298,11 +306,11 @@ def main():
 
 if __name__ == "__main__":
 
-    configDir = os.path.join(os.path.dirname(__file__),"experimentConfigs")
-    configFiles = [f for f in os.listdir(configDir) if f.endswith(".json")]
+    # configDir = os.path.join(os.path.dirname(__file__),"experimentConfigs")
+    # configFiles = [f for f in os.listdir(configDir) if f.endswith(".json")]
 
-    for config in configFiles:
-        currentConfig = config[:config.index(".json")]
-        runExperiment(currentConfig)
+    # for config in configFiles:
+    #     currentConfig = config[:config.index(".json")]
+    #     runExperiment(currentConfig)
 
-    # main()
+    main()
