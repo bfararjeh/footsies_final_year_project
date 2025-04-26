@@ -170,14 +170,85 @@ class DataPreprocessor():
         df["P1_guardpoint_norm"] = round(df["P1_guardHealth"].astype(float) / 3, 3)
         df["P2_guardpoint_norm"] = round(df["P2_guardHealth"].astype(float) / 3, 3)
 
-        p1AllMoves = [0, 1, 10, 11, 100, 105, 110, 115, 2, 200, 301, 305, 306, 310, 350, 500]
-        p2AllMoves = p1AllMoves
+        # changing how move id is stored/checked
 
-        p1IDMap = {int(moveID): i / 16 for i, moveID in enumerate(p1AllMoves)}
-        p2IDMap = {int(moveID): i / 16 for i, moveID in enumerate(p2AllMoves)}
+        # MOVEMENT
+        # neutral	    =	0
+        # right	        =	1
+        # left	        =	2
+        # forward dash	=	10
+        # back dash		=	11
 
-        df["P1_move_index_norm"] = df["P1_currentActionID"].astype(int).map(p1IDMap)
-        df["P2_move_index_norm"] = df["P2_currentActionID"].astype(int).map(p2IDMap)
+        # ATTACKS
+        # low forward	=	100
+        # knee		    =	105
+        # donkey		=	110
+        # dp			=	115
+
+        # GETTING HIT
+        # when you get hit, your action ID is set to 350, then to one of the
+        #   block recovs according to what you blocked
+        # hit 		    = 	200
+        # block 		=	350
+        # block recov   = 	301, 305, 306
+        # gb			=	310
+
+        # knockout	    =	500
+
+        # some better derived features from currentActionID
+
+        moveMap = {
+            "movement":[0, 1, 2, 10, 11],
+            "using_normal":[100, 105],
+            "using_special":[110, 115],
+            "is_hit":[200],
+            "is_blocking":[301, 305, 306, 350],
+            "is_guardbroken":[310],
+            "is_knocked_out":[500]
+        }
+
+        for category, ids in moveMap.items():
+            df[f"P1_{category}"] = df["P1_currentActionID"].astype(int).isin(ids).astype(int)
+            df[f"P2_{category}"] = df["P2_currentActionID"].astype(int).isin(ids).astype(int)
+
+        p1_is_attacking = df["P1_using_normal"] | df["P1_using_special"]
+        df["P1_move_whiff"] = (
+            (p1_is_attacking) &
+            (df["P2_is_hit"] == 0) &
+            (df["P2_is_blocking"] == 0)
+        ).astype(int)
+        df["P1_move_hit"] = (
+            (p1_is_attacking) &
+            (df["P2_is_hit"] == 1)
+        ).astype(int)
+        df["P1_move_blocked"] = (
+            (p1_is_attacking) &
+            (df["P2_is_blocking"] == 1)
+        ).astype(int)
+        df["P1_is_punishable"] = (
+            (df["P1_using_special"] == 1) &
+            (df["P2_is_blocking"] == 1)
+        ).astype(int)
+
+        p2_is_attacking = df["P2_using_normal"] | df["P2_using_special"]
+        df["P2_move_whiff"] = (
+            (p2_is_attacking) &
+            (df["P1_is_hit"] == 0) &
+            (df["P1_is_blocking"] == 0)
+        ).astype(int)
+        df["P2_move_hit"] = (
+            (p2_is_attacking) &
+            (df["P1_is_hit"] == 1)
+        ).astype(int)
+        df["P2_move_blocked"] = (
+            (p2_is_attacking) &
+            (df["P1_is_blocking"] == 1)
+        ).astype(int)
+        df["P2_is_punishable"] = (
+            (df["P2_using_special"] == 1) &
+            (df["P1_is_blocking"] == 1)
+        ).astype(int)
+
 
         # drops all replaced/unecessary columns
         df.drop(columns=["P1_currentInput",

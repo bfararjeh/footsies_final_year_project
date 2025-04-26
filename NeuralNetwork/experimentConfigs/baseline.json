@@ -12,10 +12,5 @@
       "epochs": 15,
       "sequence_length": 20,
       "step": 1
-    },
-    "feature_engineering": {
-      "enable_isDead": 1,
-      "enable_velocity": 1,
-      "enable_relativeDistance": 0
     }
   }

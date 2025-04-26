@@ -303,15 +303,12 @@ namespace Footsies
             var p1Input = GetP1InputData();
             var p2Input = GetP2InputData();
             RecordInput(p1Input, p2Input);
-            fighter1.UpdateInput(p1Input);
             fighter2.UpdateInput(p2Input);
 
-            if (networkActive == 1)
-            {
+            if (networkActive == 1 & p1Input.input != networkInput){
                 p1Input.input = networkInput;
                 fighter1.UpdateInput(p1Input);
             }
-
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 

@@ -112,9 +112,9 @@ def buildModel(inputShape):
     # last dense layer is output layer w sigmoid function
     model = Sequential()
     model.add(Input(shape=inputShape))
-    model.add(LSTM(32, return_sequences=True))
+    model.add(LSTM(64, return_sequences=True))
     model.add(Dropout(0.5))
-    model.add(Dense(16, activation='relu'))
+    model.add(Dense(32, activation='relu'))
     model.add(Dense(3, activation='sigmoid'))
 
     # compiling model with adam, binary cross-entropy, and accuracy metric
@@ -154,7 +154,7 @@ def main():
 
     sequenceLength = 20
     sequenceOverlap = 1
-    epochs = 20
+    epochs = 30
     batchSize = 32
 
     # calls for data splitting

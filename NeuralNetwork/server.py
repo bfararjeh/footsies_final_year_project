@@ -50,7 +50,8 @@ async def control_server():
     print("WebSocket server started on ws://localhost:8677")
     await shutdownEvent.wait()
     print("\nServer shutting down...")
-    time.sleep(3)
+    # time.sleep(3)
+    input()
 
 # run the server
 if __name__ == "__main__":
@@ -60,8 +61,8 @@ if __name__ == "__main__":
         # creates instance of the predictor class
         footsiesAI = FootsiesPredictor(modelPath="FootsiesNeuralNetwork.keras",
                                        sequenceLength=20,
-                                       features=14,
-                                       predictIntervals=2)
+                                       features=34,
+                                       predictIntervals=4)
         
         asyncio.run(control_server())
 
