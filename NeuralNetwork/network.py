@@ -3,18 +3,13 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential, load_model # type: ignore
 from tensorflow.keras.layers import LSTM, Dropout,  Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
-from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping # type: ignore
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping # type: ignore
 
 from preProcessing import DataPreprocessor
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
-import pandas as pd
 import numpy as np
-import os, json, datetime
-
-# run this command to view tensorboard logs
-# python -m tensorboard.main --logdir="C:\Users\bahaf\Documents\Final Year Project\footsies_final_year_project\NeuralNetwork\experimentLogs"
 
 def splitData(df, seqL, step):
     '''
