@@ -105,44 +105,37 @@ def createSequences(df, seqL, step):
 
     return np.array(sequences), np.array(targets)
 
-def buildModel(inputShape):
+def runExperiment(experimentName):
+    '''
+    this function is for experimental model building, used for testing different
+        configurations.
+    this and the main method are messy, but they dont need to be clean. would
+        rather one large function than many smaller ones in this specific
+        instance
+    '''
+
+    # defines path of config file, model, and log
+    experimentPath = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentConfigs\\{experimentName}.json")
+
+    experimentModel = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentModels\\{experimentName}.keras")
     
-    # sequential model, 1 input, 1 output, 2 hidden layers
-    # LSTM layer with 64 units, 0.3 dropout layer, dense with 32, and dense with 3
-    # last dense layer is output layer w sigmoid function
-    model = Sequential()
-    model.add(Input(shape=inputShape))
-    model.add(LSTM(32, return_sequences=True))
-    model.add(Dropout(0.5))
-    model.add(Dense(16, activation='relu'))
-    model.add(Dense(3, activation='sigmoid'))
+    logPath = os.path.join(
+        os.path.dirname(__file__),
+        f"experimentLogs\\{experimentName}\\{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}")
+    
+    print(f"Running experiment at path: {experimentPath}", end="\n")
 
-    # compiling model with adam, binary cross-entropy, and accuracy metric
-    model.compile(optimizer=Adam(), 
-                    loss='binary_crossentropy', 
-                    metrics=["accuracy"])
+    # reads experiment config
+    try:
+        with open(os.path.join("experimentConfigs/", experimentPath)) as config:
+            config = json.load(config)
 
-    return model
-
-def loadBestModel():
-    loadedModel = load_model("peak.keras")
-    return loadedModel
-
-def plotHistory(history):
-    plt.plot(history.history['loss'], label='Train Loss')
-    plt.plot(history.history['val_loss'], label='Val Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.title("Training and Validation Loss")
-    plt.show()
-
-def main():
-    '''
-    this function is the MAIN model building function. this is the final model,
-        results from experiments should be used to change this function
-        specifically.
-    '''
+    except Exception as e:
+        print(f"Unable to read config file: {e}")
 
     # pulls data, adjusts hyperparams such as sequence length and overlap.
     try:
@@ -152,60 +145,71 @@ def main():
         print("PreProcessor could not be loaded.")
         print(e)
 
-    sequenceLength = 20
-    sequenceOverlap = 1
-    epochs = 20
-    batchSize = 32
+    # modifying the dataset according to the config
+    try:
+        if config["feature_engineering"]["enable_isDead"] != 1:
+            df.drop(columns=["P1_isDead","P2_isDead"])
+        if config["feature_engineering"]["enable_velocity"] != 1:
+            df.drop(columns=["P1_velocity_norm","P2_velocity_norm"])
+        if config["feature_engineering"]["enable_relativeDistance"] == 1:
+            df["relative_distance"] = df["P2_position_norm"] - df["P1_position_norm"]
+    except Exception as e:
+        print(f"Unable to perform feature engineering: {e}")
 
     # calls for data splitting
     try:
         X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
             df=df,
-            seqL=sequenceLength,
-            step=sequenceOverlap)
+            seqL=config["training"]["sequence_length"],
+            step=config["training"]["step"])
     except Exception as e:
-        print("network.splitData() could not be run.")
-        print(e)
-
+        print(f"Data could not be split: {e}")
 
     # this takes the shape of the data gathered, so frames per sequence and
     #   features per timestep
     # shape[0] is equal to total sequences
     try:
         inputShape = (X_train_seq.shape[1], X_train_seq.shape[2])
-        model = buildModel(inputShape=inputShape)
-        checkpoint = ModelCheckpoint("FootsiesNeuralNetwork.keras", 
-                                        save_best_only=True, 
-                                        monitor="val_loss", 
-                                        mode="min", 
-                                        verbose=1)
-        earlyStop = EarlyStopping(monitor='val_loss',
-                                patience=6,
-                                restore_best_weights=True,
-                                verbose=1)
+        model = Sequential()
+        model.add(Input(shape=inputShape))
+        model.add(LSTM(config["model"]["LSTM_unit_size"], return_sequences=True))
+        model.add(Dropout(config["model"]["dropout_rate"]))
+        model.add(Dense(config["model"]["dense_unit_size"], activation='relu', dtype="float32"))
+        model.add(Dense(3, activation='sigmoid'))
+
+        newAdam = Adam(learning_rate=config["model"]["learning_rate"])
+
+        # compiling model with adam, binary cross-entropy, and accuracy metric
+        model.compile(optimizer=newAdam, 
+                        loss='binary_crossentropy', 
+                        metrics=['accuracy'])
     except Exception as e:
         print(f"Error creating model: {e}")
 
-    print(f"Input shape: {inputShape}")
-    print(f"X_train_seq shape: {X_train_seq.shape}")
-    assert inputShape == X_train_seq.shape[1:], "Input shape doesn't match training data"
+    tensorboard = TensorBoard(log_dir=logPath, histogram_freq = 1)
+    checkpoint = ModelCheckpoint(experimentModel, 
+                                    save_best_only=True, 
+                                    monitor="val_loss", 
+                                    mode="min", 
+                                    verbose=1)
+    earlyStop = EarlyStopping(monitor='val_loss',
+                              patience=config["model"]["early_stopping_patience"],
+                              restore_best_weights=True,
+                              verbose=1)
 
-    # train the model with the checkpoint callback
-    history = model.fit(X_train_seq, 
-                        y_train_seq, 
-                        epochs=epochs, 
-                        batch_size=batchSize, 
-                        validation_data=(X_val_seq, y_val_seq), 
-                        callbacks=[checkpoint, earlyStop])
-
-    trainingBatchesEst = int(np.ceil(len(X_train_seq) / batchSize))
-    print(f"Expected number of batches per epoch: {trainingBatchesEst}")
-    plotHistory(history)
-
-    # loads then evaluates the best model
-    model = load_model("FootsiesNeuralNetwork.keras")
-    model.evaluate(X_test_seq, y_test_seq, batch_size=batchSize)
-
+    # train the model with the tensorboard callback
+    model.fit(X_train_seq, 
+              y_train_seq, 
+              epochs=config["training"]["epochs"], 
+              batch_size=config["training"]["batch_size"], 
+              validation_data=(X_val_seq, y_val_seq), 
+              callbacks=[tensorboard, checkpoint, earlyStop])
 
 if __name__ == "__main__":
-    main()
+
+    configDir = os.path.join(os.path.dirname(__file__),"experimentConfigs")
+    configFiles = [f for f in os.listdir(configDir) if f.endswith(".json")]
+
+    for config in configFiles:
+        currentConfig = config[:config.index(".json")]
+        runExperiment(currentConfig)
