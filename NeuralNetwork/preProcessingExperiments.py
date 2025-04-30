@@ -47,7 +47,9 @@ class DataPreprocessor():
             r"guardHealth\((\d+)\)",
             r"currentActionID\((\d+)\)",
             r"isAlwaysCancelable\((True|False)\)",
-            r"isInHitStun\((True|False)\)"
+            r"isInHitStun\((True|False)\)",
+            r"currentActionFrame\((\d+)\)",
+            r"currentActionFrameCount\((\d+)\)",
         ]
 
         # defines expected column order via pattern list
@@ -154,6 +156,42 @@ class DataPreprocessor():
         df["P1_position_norm"] = round((df["P1_position"].astype(float) - self.p1min_pos) / (self.p1max_pos - self.p1min_pos), 3)
         df["P2_position_norm"] = round((df["P2_position"].astype(float) - self.p2min_pos) / (self.p2max_pos - self.p2min_pos), 3)
 
+        df["distance"] = df["P2_position"].astype(float)  - df["P1_position"].astype(float) 
+        df["distance_norm"] = df["P2_position_norm"] - df["P1_position_norm"]
+        df["distance_delta"] = df["distance_norm"].diff()
+
+        def label_direction(delta):
+            if pd.isna(delta):
+                return 0  # first frame
+            elif delta > 0.01:
+                return -1   # retreating
+            elif delta < -0.01:
+                return 1  # approaching
+            else:
+                return 0   # neutral / idle
+        df["approach_retreat"] = df["distance_delta"].apply(label_direction)
+
+        df["in_threat_range"] = pd.cut(
+            df["distance"],
+            bins=[0, 2.34, 2.54, 8.6],
+            labels=[1.0, 0.5, 0.0],
+            right=False
+        ).astype(float)
+
+        df["P1_is_cornered"] = pd.cut(
+            df["P1_position"].astype(float) ,
+            bins=[-float('inf'), -3.3, float("inf")],
+            labels=[1, 0],
+            right=int
+        ).astype(float)
+
+        df["P2_is_cornered"] = pd.cut(
+            df["P2_position"].astype(float) ,
+            bins=[-float('inf'), 3.3, float("inf")],
+            labels=[0, 1],
+            right=False
+        ).astype(int)
+
         df["P1_velocity_norm"] = round((df["P1_velocity_x"].astype(float) - self.p1min_vel) / (self.p1max_vel - self.p1min_vel), 3)
         df["P2_velocity_norm"] = round((df["P2_velocity_x"].astype(float) - self.p2min_vel) / (self.p2max_vel - self.p2min_vel), 3)
 
@@ -170,25 +208,143 @@ class DataPreprocessor():
         df["P1_guardpoint_norm"] = round(df["P1_guardHealth"].astype(float) / 3, 3)
         df["P2_guardpoint_norm"] = round(df["P2_guardHealth"].astype(float) / 3, 3)
 
-        # one hot encoding for currentActionID
-        df = pd.get_dummies(df,
-                            columns=["P1_currentActionID", "P2_currentActionID"],
-                            prefix=["P1_moveID", "P2_moveID"],
-                            dtype=int)
-        df["P2_moveID_11"] = 0 # because the ai didnt backdash once lmao
+        # changing how move id is stored/checked
+
+        # MOVEMENT
+        # stand 	    =	0
+        # forward       =	1
+        # backward	    =	2
+        # forward dash	=	10
+        # back dash		=	11
+
+        # ATTACKS
+        # n attack  	=	100
+        # b attack	    =	105
+        # n special		=	110
+        # b special     =	115
+
+        # GETTING HIT
+        # damage 	    = 	200
+        # prox guard    =	350
+        # guard stand   = 	301
+        # guard crouch  =   305
+        # guard break   =   310
+
+        # dead  	    =	500
+        # win           =   510
+
+        # the following columns are derived features 
+        # trying to figure out how to improve the network
+        df["P1_currentActionID"] = df["P1_currentActionID"].astype(int)
+        df["P2_currentActionID"] = df["P2_currentActionID"].astype(int)
+
+        df["P1_n_attack_punish"] = (
+            (df["distance"] >= 2.34) & 
+            (df["distance"] <= 3.18) & 
+            (df["P2_currentActionID"] == 105)
+        ).astype(int) | (
+            (df["distance"] >= 2.54) & 
+            (df["distance"] <= 3.38) & 
+            (df["P2_currentActionID"] == 100)
+        ).astype(int)
+
+        df["P1_b_attack_punish"] = (
+            (df["distance"] >= 2.34) & 
+            (df["distance"] <= 3.0) & 
+            (df["P2_currentActionID"] == 105)
+        ).astype(int) | (
+            (df["distance"] >= 2.54) & 
+            (df["distance"] <= 3.20) & 
+            (df["P2_currentActionID"] == 100)
+        ).astype(int)
+        
+        df["P1_normal_landed"] = (
+            ((df["P1_currentActionID"] == 100) | (df["P1_currentActionID"] == 105)) &
+            (df["P2_currentActionID"] == 200)
+        ).astype(int)
+
+        df["P1_is_guarding"] = (
+            (df["P1_currentActionID"] == 350) |
+            (df["P1_currentActionID"] == 301) |
+            (df["P1_currentActionID"] == 305)
+        ).astype(int)
+
+        df["P1_is_hit"] = (
+            df["P1_currentActionID"] == 200
+        ).astype(int)
+
+
+        df["P2_n_attack_punish"] = (
+            (df["distance"] >= 2.34) & 
+            (df["distance"] <= 3.18) & 
+            (df["P1_currentActionID"] == 105)
+        ).astype(int) | (
+            (df["distance"] >= 2.54) & 
+            (df["distance"] <= 3.38) & 
+            (df["P1_currentActionID"] == 100)
+        ).astype(int)
+
+        df["P2_b_attack_punish"] = (
+            (df["distance"] >= 2.34) & 
+            (df["distance"] <= 3.0) & 
+            (df["P1_currentActionID"] == 105)
+        ).astype(int) | (
+            (df["distance"] >= 2.54) & 
+            (df["distance"] <= 3.20) & 
+            (df["P1_currentActionID"] == 100)
+        ).astype(int)
+        
+        df["P2_normal_landed"] = (
+            ((df["P2_currentActionID"] == 100) | (df["P2_currentActionID"] == 105)) &
+            (df["P1_currentActionID"] == 200)
+        ).astype(int)
+
+        df["P2_is_guarding"] = (
+            (df["P2_currentActionID"] == 350) |
+            (df["P2_currentActionID"] == 301) |
+            (df["P2_currentActionID"] == 305)
+        ).astype(int)
+
+        df["P2_is_hit"] = (
+            df["P2_currentActionID"] == 200
+        ).astype(int)
+
+
+        df["P1_frame_advantage"] = df["P1_currentActionFrameCount"].astype(int) - df["P1_currentActionFrame"].astype(int)
+        df["P2_frame_advantage"] = df["P2_currentActionFrameCount"].astype(int) - df["P1_currentActionFrame"].astype(int)
+
+        df['P1_frame_advantage'] = df['P1_frame_advantage'].mask(df["P1_isAlwaysCancelable"].astype(int) == 1, 0)
+        df['P2_frame_advantage'] = df['P2_frame_advantage'].mask(df["P2_isAlwaysCancelable"].astype(int) == 1, 0)
+
+        df["P1_frame_advantage"] = df["P2_frame_advantage"].astype(int) - df["P1_frame_advantage"].astype(int)
+        df["P2_frame_advantage"] = df["P1_frame_advantage"].astype(int) - df["P2_frame_advantage"].astype(int)
+
+        df.loc[df['P1_frame_advantage'] < 0, 'P1_frame_advantage'] = -1
+        df.loc[df['P1_frame_advantage'] == 0, 'P1_frame_advantage'] = 0
+        df.loc[df['P1_frame_advantage'] > 0, 'P1_frame_advantage'] = 1
+
+        df.loc[df['P2_frame_advantage'] < 0, 'P2_frame_advantage'] = -1
+        df.loc[df['P2_frame_advantage'] == 0, 'P2_frame_advantage'] = 0
+        df.loc[df['P2_frame_advantage'] > 0, 'P2_frame_advantage'] = 1
 
 
         # drops all replaced/unecessary columns
-        df.drop(columns=["P1_currentInput",
+        df.drop(columns=["distance",
+                         "distance_delta",
+                         "P1_currentInput",
                          "P1_position",
                          "P1_velocity_x",
                          "P1_guardHealth",
                          "P1_currentActionID",
+                         "P1_currentActionFrame",
+                         "P1_currentActionFrameCount",
                          "P2_currentInput",
                          "P2_position",
                          "P2_velocity_x",
                          "P2_guardHealth",
-                         "P2_currentActionID"], inplace=True, errors="ignore")
+                         "P2_currentActionID"
+                         "P2_currentActionFrame",
+                         "P2_currentActionFrameCount",], inplace=True, errors="ignore")
         
         # moves all p2 columns to right side
         allColumns = df.columns.tolist()
@@ -237,10 +393,10 @@ class DataPreprocessor():
         # creating a config entry for all columns post normalisation
         config["normalisedColumnList"] = normalisedDF.columns.tolist()
 
-        dfSavePath = os.path.join(os.path.dirname(__file__), 'normalisedDataset.csv')
+        dfSavePath = os.path.join(os.path.dirname(__file__), 'normalisedDatasetExperimental.csv')
         normalisedDF.to_csv(dfSavePath)
 
-        with open(os.path.join(configPath, "networkConfig.json"), "w") as configFile:
+        with open(os.path.join(configPath, "networkConfigExperimental.json"), "w") as configFile:
             json.dump(config, configFile)
         
         print(f"Data normalised to {dfSavePath} and config saved.")

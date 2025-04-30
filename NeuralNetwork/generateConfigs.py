@@ -17,11 +17,6 @@ baseConfig = {
         "sequence_length": None,
         "step": 1
     },
-    "feature_engineering": {
-        "enable_isDead": None,
-        "enable_velocity": None,
-        "enable_relativeDistance": None
-    }
 }
 
 # hyperparams
@@ -33,19 +28,12 @@ batchSizes = [32, 64]
 seqLengths = [20, 50]
 stepSizes = [1, 5]
 
-# feature toggles
-featureOptions = [
-    {"enable_isDead": 1, "enable_velocity": 1, "enable_relativeDistance": 0},
-    {"enable_isDead": 1, "enable_velocity": 1, "enable_relativeDistance": 1},
-    {"enable_isDead": 0, "enable_velocity": 0, "enable_relativeDistance": 1}
-]
-
 outputDirectory = os.path.join(os.path.dirname(__file__), "experimentConfigs")
 
 # create config permutations
 count = 1
-for (lstm, dense, dr, lr, bs, seq, steps, feats) in product(
-    lstmSizes, denseSizes, dropouts, learningRates, batchSizes, seqLengths, stepSizes, featureOptions):
+for (lstm, dense, dr, lr, bs, seq, steps) in product(
+    lstmSizes, denseSizes, dropouts, learningRates, batchSizes, seqLengths, stepSizes):
 
     config = baseConfig.copy()
     config["experiment_name"] = f"exp_{count:03d}"
@@ -57,8 +45,6 @@ for (lstm, dense, dr, lr, bs, seq, steps, feats) in product(
 
     config["training"]["batch_size"] = bs
     config["training"]["sequence_length"] = seq
-
-    config["feature_engineering"] = feats.copy()
 
     # Save as JSON
     with open(os.path.join(outputDirectory, f"{config['experiment_name']}.json"), 'w') as f:

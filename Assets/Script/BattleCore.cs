@@ -309,6 +309,9 @@ namespace Footsies
                 p1Input.input = networkInput;
                 fighter1.UpdateInput(p1Input);
             }
+            if (networkActive == 0){
+                fighter1.UpdateInput(p1Input);
+            }
 
             _fighters.ForEach((f) => f.IncrementActionFrame());
 
@@ -689,7 +692,7 @@ namespace Footsies
             type string
         simultaneously releases the "messageAvailable" semaphore
         */
-        public void UpdateMessageQueue(string message)
+        public static void UpdateMessageQueue(string message)
         {
             messageQueue.Enqueue(message);
             messageAvailable.Release();}

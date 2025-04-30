@@ -4,8 +4,9 @@ from tensorflow.keras.models import Sequential, load_model # type: ignore
 from tensorflow.keras.layers import LSTM, Dropout,  Dense, Input # type: ignore
 from tensorflow.keras.optimizers import Adam # type: ignore
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping # type: ignore
+from tensorflow.keras import backend as K # type: ignore
 
-from preProcessing import DataPreprocessor
+from preProcessingExperiments import DataPreprocessor
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -105,62 +106,6 @@ def createSequences(df, seqL, step):
 
     return np.array(sequences), np.array(targets)
 
-
-def lenient_accuracy(y_true, y_pred, window=2):
-    """
-    find lenient accuracy
-    y_true: (batch_size, seq_length, num_classes)
-    y_pred: (batch_size, seq_length, num_classes)
-    """
-    # Round predictions to nearest 0 or 1
-    y_pred_rounded = tf.round(y_pred)
-    y_true = tf.cast(y_true, tf.float32)
-    
-    # Initialize matches
-    batch_size = tf.shape(y_true)[0]
-    seq_len = tf.shape(y_true)[1]
-
-    correct = 0.0
-    total = 0.0
-
-    for offset in range(-window, window + 1):
-        # Shift y_true
-        shifted_y_true = tf.roll(y_true, shift=offset, axis=1)
-
-        # Compare predictions to shifted ground truth
-        matches = tf.reduce_all(tf.equal(y_pred_rounded, shifted_y_true), axis=-1)  # (batch_size, seq_len)
-
-        # Ignore invalid shifts (over borders)
-        if offset < 0:
-            matches = matches[:, :-offset]
-        elif offset > 0:
-            matches = matches[:, offset:]
-
-        correct += tf.reduce_sum(tf.cast(matches, tf.float32))
-        total += tf.cast(tf.size(matches), tf.float32)
-
-    return correct / total
-
-class LenientAccuracy(tf.keras.metrics.Metric):
-    def __init__(self, window=2, name="lenient_accuracy", **kwargs):
-        super(LenientAccuracy, self).__init__(name=name, **kwargs)
-        self.window = window
-        self.accuracy = self.add_weight(name="accuracy", initializer="zeros")
-        self.count = self.add_weight(name="count", initializer="zeros")
-
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        acc = lenient_accuracy(y_true, y_pred, window=self.window)
-        self.accuracy.assign_add(acc)
-        self.count.assign_add(1.0)
-
-    def result(self):
-        return self.accuracy / self.count
-
-    def reset_states(self):
-        self.accuracy.assign(0.0)
-        self.count.assign(0.0)
-
-
 def runExperiment(experimentName):
     '''
     this function is for experimental model building, used for testing different
@@ -185,6 +130,7 @@ def runExperiment(experimentName):
     
     print(f"Running experiment at path: {experimentPath}", end="\n")
 
+
     # reads experiment config
     try:
         with open(os.path.join("experimentConfigs/", experimentPath)) as config:
@@ -193,13 +139,17 @@ def runExperiment(experimentName):
     except Exception as e:
         print(f"Unable to read config file: {e}")
 
+
     # pulls data, adjusts hyperparams such as sequence length and overlap.
     try:
         myNormaliser = DataPreprocessor()
         df = myNormaliser.pullDataset()
+        assert not df.isnull().values.any(), "NaN detected in features!"
+        assert np.isfinite(df.values).all(), "Inf or -Inf detected in features!"
     except Exception as e:
         print("PreProcessor could not be loaded.")
         print(e)
+
 
     # calls for data splitting
     try:
@@ -209,6 +159,7 @@ def runExperiment(experimentName):
             step=config["training"]["step"])
     except Exception as e:
         print(f"Data could not be split: {e}")
+
 
     # this takes the shape of the data gathered, so frames per sequence and
     #   features per timestep
@@ -227,17 +178,22 @@ def runExperiment(experimentName):
         # compiling model with adam, binary cross-entropy, and accuracy metric
         model.compile(optimizer=newAdam, 
                         loss='binary_crossentropy', 
-                        metrics=['accuracy', LenientAccuracy(window=2)])
+                        metrics=['accuracy'])
+        print(model.summary())
     except Exception as e:
         print(f"Error creating model: {e}")
 
+
     tensorboard = TensorBoard(log_dir=logPath, histogram_freq = 1)
+
     checkpoint = ModelCheckpoint(experimentModel, 
                                     save_best_only=True, 
-                                    monitor="val_loss", 
+                                    monitor='val_loss', 
                                     mode="min", 
                                     verbose=1)
+    
     earlyStop = EarlyStopping(monitor='val_loss',
+                              mode="min",
                               patience=config["model"]["early_stopping_patience"],
                               restore_best_weights=True,
                               verbose=1)
@@ -249,10 +205,6 @@ def runExperiment(experimentName):
               batch_size=config["training"]["batch_size"], 
               validation_data=(X_val_seq, y_val_seq), 
               callbacks=[tensorboard, checkpoint, earlyStop])
-
-
-
-
 
 
 if __name__ == "__main__":
