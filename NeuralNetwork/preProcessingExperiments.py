@@ -328,6 +328,14 @@ class DataPreprocessor():
         df.loc[df['P2_frame_advantage'] > 0, 'P2_frame_advantage'] = 1
 
 
+        # one hot encoding for currentActionID
+        df = pd.get_dummies(df,
+                            columns=["P1_currentActionID", "P2_currentActionID"],
+                            prefix=["P1_moveID", "P2_moveID"],
+                            dtype=int)
+        df["P2_moveID_11"] = 0 # because the ai didnt backdash once lmao
+
+
         # drops all replaced/unecessary columns
         df.drop(columns=["distance",
                          "distance_delta",
@@ -408,7 +416,7 @@ class DataPreprocessor():
         Return type: dataframe
         '''
 
-        path = os.path.join(os.path.dirname(__file__), 'normalisedDataset.csv')
+        path = os.path.join(os.path.dirname(__file__), 'normalisedDatasetExperimental.csv')
         return pd.read_csv(path, index_col=0)
 
     def parseAndNormalise(self, datasetPath, configPath):
