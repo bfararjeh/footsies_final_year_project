@@ -47,7 +47,9 @@ class DataPreprocessor():
             r"guardHealth\((\d+)\)",
             r"currentActionID\((\d+)\)",
             r"isAlwaysCancelable\((True|False)\)",
-            r"isInHitStun\((True|False)\)"
+            r"isInHitStun\((True|False)\)",
+            r"currentActionFrame\((\d+)\)",
+            r"currentActionFrameCount\((\d+)\)",
         ]
 
         # defines expected column order via pattern list
@@ -184,11 +186,172 @@ class DataPreprocessor():
                          "P1_velocity_x",
                          "P1_guardHealth",
                          "P1_currentActionID",
+                         "P1_currentActionFrame",
+                         "P1_currentActionFrameCount",
                          "P2_currentInput",
                          "P2_position",
                          "P2_velocity_x",
                          "P2_guardHealth",
-                         "P2_currentActionID"], inplace=True, errors="ignore")
+                         "P2_currentActionID",
+                         "P2_currentActionFrame",
+                         "P2_currentActionFrameCount",], inplace=True, errors="ignore")
+        
+        # moves all p2 columns to right side
+        allColumns = df.columns.tolist()
+
+        p2Cols = [col for col in allColumns if col.startswith("P2")]
+        otherCols = [col for col in allColumns if col not in p2Cols] 
+        df = df[otherCols + p2Cols]
+    
+        return df
+  
+    def normaliseExperimental(self, rawDataFrame):
+        '''
+        Experimental normalisation: creates more columns that can be tested
+            later
+        Unused/columns pre normalisation are removed then columns are sorted.
+        Argument type: dataframe
+        Return type: dataframe
+        '''
+        df = rawDataFrame
+
+        # decomposing bitwise mask of currentInput to 3 seperate columns
+        df["P1_attack"]   = np.bitwise_and(
+            np.right_shift(df["P1_currentInput"].astype(int), 2), 1)  # bit 2
+        df["P1_right"]  = np.bitwise_and(
+            np.right_shift(df["P1_currentInput"].astype(int), 1), 1)  # bit 1
+        df["P1_left"] = np.bitwise_and(
+            df["P1_currentInput"].astype(int), 1)                     # bit 0
+
+        # creation and normalisation of relative distance
+        df["distance"] = df["P2_position"].astype(float)  - df["P1_position"].astype(float) 
+        df["distance_norm"] = round((df["P2_position"].astype(float) - self.p2min_pos) / (self.p2max_pos - self.p2min_pos), 3) - round((df["P1_position"].astype(float) - self.p1min_pos) / (self.p1max_pos - self.p1min_pos), 3)
+
+        # determining whether fighters are in threat range
+        df["in_threat_range"] = pd.cut(
+            df["distance"],
+            bins=[0, 2.34, 2.54, float("inf")],
+            labels=[1.0, 0.5, 0.0],
+            right=False
+        ).astype(float)
+
+        # turns all boolean T/F values into 1/0 respectively
+        for col in ["P1_isDead", 
+                    "P1_isAlwaysCancelable", 
+                    "P1_isInHitStun", 
+                    "P2_isDead", 
+                    "P2_isAlwaysCancelable", 
+                    "P2_isInHitStun"]:
+            df[col] = df[col].map({'False':0, 'True':1})
+
+        # turns currentActionID into an integer for comparisons
+        df["P1_currentActionID"] = df["P1_currentActionID"].astype(int)
+        df["P2_currentActionID"] = df["P2_currentActionID"].astype(int)
+
+        # determine whether a player is guarding
+        df["P1_is_guarding"] = (
+            (df["P1_currentActionID"] == 350) |
+            (df["P1_currentActionID"] == 301) |
+            (df["P1_currentActionID"] == 305) |
+            (df["P1_currentActionID"] == 306) |
+            (df["P1_currentActionID"] == 310)
+        ).astype(int)
+
+        df["P2_is_guarding"] = (
+            (df["P2_currentActionID"] == 350) |
+            (df["P2_currentActionID"] == 301) |
+            (df["P2_currentActionID"] == 305) |
+            (df["P2_currentActionID"] == 306) |
+            (df["P2_currentActionID"] == 310)
+        ).astype(int)
+
+        df["P2_is_attacking"] = (
+            (df["P2_currentActionID"] == 100) |
+            (df["P2_currentActionID"] == 105) |
+            (df["P2_currentActionID"] == 110) |
+            (df["P2_currentActionID"] == 115)
+        ).astype(int)
+
+        # frame advantage calculation
+        # uses the same code as the game, messy cause its working from dataframes
+        df["P1_frame_advantage"] = df["P1_currentActionFrameCount"].astype(int) - df["P1_currentActionFrame"].astype(int)
+        df["P2_frame_advantage"] = df["P2_currentActionFrameCount"].astype(int) - df["P1_currentActionFrame"].astype(int)
+
+        df['P1_frame_advantage'] = df['P1_frame_advantage'].mask(df["P1_isAlwaysCancelable"].astype(int) == 1, 0)
+        df['P2_frame_advantage'] = df['P2_frame_advantage'].mask(df["P2_isAlwaysCancelable"].astype(int) == 1, 0)
+
+        df["P1_frame_advantage"] = df["P2_frame_advantage"].astype(int) - df["P1_frame_advantage"].astype(int)
+        df["P2_frame_advantage"] = df["P1_frame_advantage"].astype(int) - df["P2_frame_advantage"].astype(int)
+
+        df.loc[df['P1_frame_advantage'] < 0, 'P1_frame_advantage'] = -1
+        df.loc[df['P1_frame_advantage'] == 0, 'P1_frame_advantage'] = 0
+        df.loc[df['P1_frame_advantage'] > 0, 'P1_frame_advantage'] = 1
+
+        df.loc[df['P2_frame_advantage'] < 0, 'P2_frame_advantage'] = -1
+        df.loc[df['P2_frame_advantage'] == 0, 'P2_frame_advantage'] = 0
+        df.loc[df['P2_frame_advantage'] > 0, 'P2_frame_advantage'] = 1
+
+        # one hot encoding for currentActionID
+        df = pd.get_dummies(df,
+                            columns=["P1_currentActionID", "P2_currentActionID"],
+                            prefix=["P1_moveID", "P2_moveID"],
+                            dtype=int)
+        df["P2_moveID_11"] = 0 # because the ai didnt backdash once lmao
+
+        # drops all replaced/unecessary columns
+        # this drop is columns that have been normalised and are no longer
+        #   required
+        df.drop(columns=["distance",
+                         "P1_currentInput",
+                         "P1_position",
+                         "P1_velocity_x",
+                         "P1_guardHealth",
+                         "P1_currentActionID",
+                         "P1_currentActionFrame",
+                         "P1_currentActionFrameCount",
+                         "P2_currentInput",
+                         "P2_position",
+                         "P2_velocity_x",
+                         "P2_guardHealth",
+                         "P2_currentActionID",
+                         "P2_currentActionFrame",
+                         "P2_currentActionFrameCount",], inplace=True, errors="ignore")
+
+        # drops all replaced/unecessary columns
+        # this drop is columns that have been deemed unimportant during
+        #   model training
+        df.drop(columns=["P1_isDead",
+                         "P1_moveID_10",
+                         "P1_moveID_11",
+                         "P1_moveID_115",
+                         "P1_moveID_301",
+                         "P1_moveID_305",
+                         "P1_moveID_306",
+                         "P1_moveID_310",
+                         "P1_moveID_350",
+                         "P1_moveID_200",
+                         "P1_moveID_500",
+                         "P2_isDead",
+                         "P2_isAlwaysCancelable",
+                         "P2_moveID_0",
+                         "P2_moveID_1",
+                         "P2_moveID_2",
+                         "P2_moveID_10",
+                         "P2_moveID_11",
+                         "P2_moveID_100",
+                         "P2_moveID_105",
+                         "P2_moveID_110",
+                         "P2_moveID_115",
+                         "P2_moveID_200",
+                         "P2_moveID_301",
+                         "P2_moveID_305",
+                         "P2_moveID_306",
+                         "P2_moveID_310",
+                         "P2_moveID_350",
+                         "P2_moveID_500",
+
+        ], inplace=True, errors="ignore")
+
         
         # moves all p2 columns to right side
         allColumns = df.columns.tolist()
@@ -231,7 +394,7 @@ class DataPreprocessor():
 
         start = time.perf_counter()
         # calling the normalise function
-        normalisedDF = self.normalise(rawDataset)
+        normalisedDF = self.normaliseExperimental(rawDataset)
         print(f"Normalisation: {(time.perf_counter() - start):.2f}s")
 
         # creating a config entry for all columns post normalisation

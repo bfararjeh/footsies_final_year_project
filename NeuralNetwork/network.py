@@ -240,6 +240,40 @@ def defineCallbacks(logPath, modelPath):
     return [checkpointCB, earlystopCB, tensorboardCB]
 
 
+def permutationImportance(model, X, y, metric_class):
+    """
+    model: trained keras model
+    X: input features (num_samples, seq_len, features)
+    y: true targets (num_samples, seq_len, num_classes)
+    metric_class: a keras Metric class
+    """
+    # Instantiate the metric
+    metric = metric_class()
+    
+    # Get base score
+    y_pred = model.predict(X)
+    metric.update_state(y, y_pred)
+    base_score = metric.result().numpy()
+    metric.reset_states()
+
+    importances = []
+    feature_count = X.shape[2]
+
+    for i in range(feature_count):
+        X_permuted = X.copy()
+        np.random.shuffle(X_permuted[:, :, i])  # shuffle feature i across all samples
+
+        y_pred_perm = model.predict(X_permuted)
+        metric.update_state(y, y_pred_perm)
+        permuted_score = metric.result().numpy()
+        metric.reset_states()
+
+        importance = base_score - permuted_score
+        importances.append(importance)
+
+    return np.array(importances)
+
+
 def standardModelTrainTest():
     '''
     the standard model test, using the default configuration of hyperparameters
@@ -290,8 +324,19 @@ def standardModelTrainTest():
                         callbacks=defineCallbacks(logPath, "FootsiesNeuralNetwork.keras"))
     
 
-    model = load_model("FootsiesNeuralNetwork.keras")
     model.evaluate(X_test_seq, y_test_seq, batch_size=batchSize)
+
+    importances = permutationImportance(model, X_val_seq, y_val_seq, metric_class=F1Score)
+    featureLabels = (df.drop(columns=["P1_attack", "P1_left", "P1_right", "round_ID", "frame_number"])).columns.tolist()
+
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.barh(range(len(importances)), importances)
+    plt.yticks(ticks=range(len(importances)), labels=featureLabels)
+    plt.xlabel("Importance (ΔF1 score)")
+    plt.title("Feature Importance (Permutation)")
+    plt.tight_layout()
+    plt.show()
 
     return history
 

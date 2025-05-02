@@ -1,0 +1,13 @@
+{
+  "experiment_name": "exp_072",
+  "model": {
+    "LSTM_unit_size": 32,
+    "dense_unit_size": 16,
+    "dropout_rate": 0.5
+  },
+  "training": {
+    "batch_size": 64,
+    "sequence_length": 30,
+    "step": 2
+  }
+}
