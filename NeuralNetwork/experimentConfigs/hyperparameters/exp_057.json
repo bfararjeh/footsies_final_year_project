@@ -6,7 +6,7 @@
     "dropout_rate": 0.3
   },
   "training": {
-    "batch_size": 64,
+    "batch_size": 32,
     "sequence_length": 20,
     "step": 1
   }

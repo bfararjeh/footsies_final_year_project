@@ -2,12 +2,12 @@
   "experiment_name": "exp_062",
   "model": {
     "LSTM_unit_size": 32,
-    "dense_unit_size": 16,
-    "dropout_rate": 0.5
+    "dense_unit_size": 32,
+    "dropout_rate": 0.3
   },
   "training": {
-    "batch_size": 32,
-    "sequence_length": 10,
-    "step": 2
+    "batch_size": 64,
+    "sequence_length": 20,
+    "step": 1
   }
 }

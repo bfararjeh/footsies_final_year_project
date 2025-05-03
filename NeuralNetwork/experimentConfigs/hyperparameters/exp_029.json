@@ -7,7 +7,7 @@
   },
   "training": {
     "batch_size": 32,
-    "sequence_length": 30,
-    "step": 1
+    "sequence_length": 10,
+    "step": 2
   }
 }

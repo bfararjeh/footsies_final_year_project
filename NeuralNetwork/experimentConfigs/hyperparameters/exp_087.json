@@ -8,6 +8,6 @@
   "training": {
     "batch_size": 32,
     "sequence_length": 20,
-    "step": 1
+    "step": 2
   }
 }

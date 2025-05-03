@@ -288,9 +288,8 @@ def standardModelTrainTest():
 
     epochs = 50
     logPath = os.path.join(os.path.dirname(__file__),f"experimentLogs\\{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}")
-    classWeights, sequenceLength, sequenceStep, batchSize = retrieveClassWeights(df), 20, 1, 32
-    lstmSize, dropoutRate, denseSize = 64, 0.5, 32
-
+    classWeights, sequenceLength, sequenceStep, batchSize = retrieveClassWeights(df), 30, 1, 64
+    lstmSize, dropoutRate, denseSize = 32, 0.3, 16
 
     # splits data and creates sequences
     try:
@@ -359,6 +358,7 @@ def batchHyperparamTest():
             df=df,
             seqL=20,
             step=1)
+        currSeqL, currSeqS = 20, 1
     except Exception as e:
         print("network.splitData() could not be run.")
         print(e)
@@ -397,13 +397,14 @@ def batchHyperparamTest():
         except Exception as e:
             print(f"Unable to read config file: {e}")
 
-        if (sequenceLength != 20) or (sequenceStep != 1):
+        if (sequenceLength != currSeqL) or (sequenceStep != currSeqS):
             print("Regenerating training sequences.")
             try:
                 X_train_seq, y_train_seq, X_val_seq, y_val_seq, X_test_seq, y_test_seq = splitData(
                     df=df,
                     seqL=sequenceLength,
                     step=sequenceStep)
+                currSeqL, currSeqS = sequenceLength, sequenceStep
             except Exception as e:
                 print(f"network.splitData() could not be run: {e}")
 

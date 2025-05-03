@@ -84,7 +84,8 @@ namespace Footsies
             try
             {
                 Process pythonServer = new();
-                pythonServer.StartInfo.FileName = @"NeuralNetwork\server.py";
+                string pythonScriptPath = System.IO.Path.Combine(Application.dataPath, "..", "NeuralNetwork", "server.py");
+                pythonServer.StartInfo.FileName = pythonScriptPath;
                 pythonServer.Start();
 
                 _ = WebSocketClient.FootsiesClient.Main();

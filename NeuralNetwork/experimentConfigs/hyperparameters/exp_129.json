@@ -1,13 +1,13 @@
 {
   "experiment_name": "exp_129",
   "model": {
-    "LSTM_unit_size": 64,
-    "dense_unit_size": 32,
+    "LSTM_unit_size": 32,
+    "dense_unit_size": 16,
     "dropout_rate": 0.3
   },
   "training": {
-    "batch_size": 64,
-    "sequence_length": 20,
-    "step": 1
+    "batch_size": 32,
+    "sequence_length": 30,
+    "step": 2
   }
 }

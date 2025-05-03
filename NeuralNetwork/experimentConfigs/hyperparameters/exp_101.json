@@ -1,8 +1,8 @@
 {
   "experiment_name": "exp_101",
   "model": {
-    "LSTM_unit_size": 64,
-    "dense_unit_size": 16,
+    "LSTM_unit_size": 16,
+    "dense_unit_size": 32,
     "dropout_rate": 0.3
   },
   "training": {

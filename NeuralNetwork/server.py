@@ -17,22 +17,23 @@ async def messageHandler(websocket):
         # this block is where message recieving and processing happens
         async for message in websocket:
 
-            start = time.perf_counter()
             footsiesAI.prepareData(message)
-            print(f"PrepareData: {(time.perf_counter() - start)*1000:.2f}ms")
 
             start = time.perf_counter()
             output = footsiesAI.predict()
-            print(f"Predict: {(time.perf_counter() - start)*1000:.2f}ms")
+            if (time.perf_counter() - start)*1000 > 0.01:
+                print(f"Predict: {(time.perf_counter() - start)*1000:.2f}ms")
 
             await websocket.send(str(output))
     
     # exception handling
     except websockets.ConnectionClosed:
         print("Client disconnected.")
+        shutdownEvent.set()
 
     except Exception as e:
         print(f"Error: {e}.")
+        shutdownEvent.set()
 
     finally:
         print("Connection closed.")
@@ -49,8 +50,7 @@ async def control_server():
     
     print("WebSocket server started on ws://localhost:8677")
     await shutdownEvent.wait()
-    print("\nServer shutting down...")
-    # time.sleep(3)
+    print("\nPlease press enter to shutdown the server.")
     input()
 
 # run the server
@@ -60,9 +60,9 @@ if __name__ == "__main__":
 
         # creates instance of the predictor class
         footsiesAI = FootsiesPredictor(modelPath="FootsiesNeuralNetwork.keras",
-                                       sequenceLength=20,
-                                       features=34,
-                                       predictIntervals=4)
+                                       sequenceLength=30,
+                                       features=16,
+                                       predictIntervals=5)
         
         asyncio.run(control_server())
 

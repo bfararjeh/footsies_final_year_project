@@ -2,7 +2,7 @@
   "experiment_name": "exp_082",
   "model": {
     "LSTM_unit_size": 32,
-    "dense_unit_size": 32,
+    "dense_unit_size": 16,
     "dropout_rate": 0.3
   },
   "training": {

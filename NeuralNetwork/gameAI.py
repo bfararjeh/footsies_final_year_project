@@ -3,6 +3,7 @@ import pandas as pd
 import tensorflow as tf
 
 from preProcessing import DataPreprocessor
+from network import F1Score, weightedBinaryCrossentropy
 from tensorflow.keras.models import load_model # type: ignore
 
 
@@ -25,7 +26,10 @@ class FootsiesPredictor():
     '''
 
     def __init__(self, modelPath, sequenceLength, features, predictIntervals):
-        self.model = load_model(modelPath)
+        self.model = load_model(modelPath, custom_objects={
+            "F1Score": F1Score,
+            "loss_fn": weightedBinaryCrossentropy([np.float64(2.92), np.float64(2.16), np.float64(5.53)])}
+        )
         self.seqL = sequenceLength
         self.features = features
         self.predInterval = predictIntervals
@@ -82,7 +86,7 @@ class FootsiesPredictor():
             # prediction order is [left, right, attack]
             prediction = self.model(currentSequence)[0, -1]
 
-            threshold = 0.5         # input threshold
+            threshold = 0.4         # input threshold
 
             # converts list of floats into binary, then into int
             binOutput = [

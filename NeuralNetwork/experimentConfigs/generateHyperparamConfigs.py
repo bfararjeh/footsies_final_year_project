@@ -28,8 +28,8 @@ outputDirectory = os.path.join(os.path.dirname(__file__), "hyperparameters")
 
 # create config permutations
 count = 1
-for (lstm, dense, dr, bs, seq, steps) in product(
-    lstmSizes, denseSizes, dropouts, batchSizes, seqLengths, stepSizes):
+for (seq, steps, lstm, dense, dr, bs) in product(
+    seqLengths, stepSizes, lstmSizes, denseSizes, dropouts, batchSizes):
 
     config = baseConfig.copy()
     config["experiment_name"] = f"exp_{count:03d}"
