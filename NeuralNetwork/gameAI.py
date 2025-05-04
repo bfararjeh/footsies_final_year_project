@@ -109,6 +109,6 @@ class FootsiesPredictor():
 
         # 60 fps = 16.67 ms per frame - interval = average_time / 16.67
         # convert ms to frames, round up to at least 1
-        self.predictIntervals = max(1, round(average_time / 16.67))
+        self.predictIntervals = max(1, round(average_time / 16.67)) + 1
 
         print(f"Average prediction time: {average_time:.2f}ms → Prediction Intervals: {self.predictIntervals} frames.")
