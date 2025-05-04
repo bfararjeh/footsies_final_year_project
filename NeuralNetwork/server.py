@@ -20,8 +20,9 @@ async def messageHandler(websocket):
 
             start = time.perf_counter()
             output = footsiesAI.predict()
-            if (time.perf_counter() - start)*1000 > 0.01:
-                print(f"Predict: {(time.perf_counter() - start)*1000:.2f}ms")
+            finish = (time.perf_counter() - start)*1000
+            if finish > 0.01:
+                footsiesAI.calculatePredictionIntervals(finish)
 
             await websocket.send(str(output))
     

@@ -33,6 +33,7 @@ class FootsiesPredictor():
         self.seqL = sequenceLength
         self.features = features
         self.predInterval = predictIntervals
+        self.recentPredictionTimes = []
 
         # buffer and counter for managing prediction rates and sequences
         self.internalCounter = 1
@@ -98,3 +99,16 @@ class FootsiesPredictor():
         
         # lastPrediction ensures something is always returned, even if its old
         return self.lastPrediction
+    
+    def calculatePredictionIntervals(self, predictTime):
+        self.recentPredictionTimes.append(predictTime)
+        if len(self.recentPredictionTimes) > 3:
+            self.recentPredictionTimes.pop(0)
+
+        average_time = sum(self.recentPredictionTimes) / len(self.recentPredictionTimes)
+
+        # 60 fps = 16.67 ms per frame - interval = average_time / 16.67
+        # convert ms to frames, round up to at least 1
+        self.predictIntervals = max(1, round(average_time / 16.67))
+
+        print(f"Average prediction time: {average_time:.2f}ms → Prediction Intervals: {self.predictIntervals} frames.")
