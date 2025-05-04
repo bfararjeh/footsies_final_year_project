@@ -139,10 +139,10 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 1305
-    y: 87
+    x: 0
+    y: 36
     width: 1247
-    height: 1301
+    height: 1325
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0

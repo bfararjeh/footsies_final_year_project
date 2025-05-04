@@ -1,5 +1,4 @@
-from gameAI import FootsiesPredictor
-import tensorflow as tf
+from pathlib import Path
 import asyncio, websockets, time, sys
 
 shutdownEvent = asyncio.Event()
@@ -42,6 +41,8 @@ async def messageHandler(websocket):
 # start the WebSocket server
 async def control_server():
 
+    global footsiesAI
+
     server = await websockets.serve(messageHandler, 
                                     "localhost", 
                                     8677,
@@ -49,6 +50,18 @@ async def control_server():
                                     ping_timeout=10)
     
     print("WebSocket server started on ws://localhost:8677")
+
+    from gameAI import FootsiesPredictor
+
+    modelPath = Path(__file__).resolve().parent / "FootsiesNeuralNetwork.keras"
+    footsiesAI = FootsiesPredictor(
+        modelPath=modelPath,
+        sequenceLength=30,
+        features=16,
+        predictIntervals=5
+    )
+    print("Model loaded successfully.")
+    
     await shutdownEvent.wait()
     print("\nPlease press enter to shutdown the server.")
     input()
@@ -57,13 +70,6 @@ async def control_server():
 if __name__ == "__main__":
 
     try:
-
-        # creates instance of the predictor class
-        footsiesAI = FootsiesPredictor(modelPath="FootsiesNeuralNetwork.keras",
-                                       sequenceLength=30,
-                                       features=16,
-                                       predictIntervals=5)
-        
         asyncio.run(control_server())
 
     except Exception as e:

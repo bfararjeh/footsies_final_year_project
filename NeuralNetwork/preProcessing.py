@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import re, os, json, time
@@ -23,8 +24,10 @@ class DataPreprocessor():
     def __init__(self):
         
         try:
-            configPath = os.path.join(
-                os.path.dirname(os.path.dirname(__file__)), "networkConfig.json")
+            base_dir = Path(__file__).resolve().parent
+            configPath = base_dir / "networkConfig.json"
+            print(f"Loading config from: {configPath}")
+
             with open(configPath, "r") as rawConfig:
                 self.config = json.load(rawConfig)
 
