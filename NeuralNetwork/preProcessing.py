@@ -3,12 +3,6 @@ import pandas as pd
 import numpy as np
 import re, os, json, time
 
-'''
-test line
-
-"49: P1_INFO:currentInput(1)position(-1.16, 0.00)velocity_x(0)isDead(False)vitalHealth(1)guardHealth(3)currentActionID(105)currentActionFrame(10)currentActionFrameCount(21)isAlwaysCancelable(False)currentActionHitCount(1)currentHitStunFrame(0)isInHitStun(False)isAlwaysCancelable(False)P2_INFO:currentInput(2)position(0.93, 0.00)velocity_x(-0.5)isDead(False)vitalHealth(1)guardHealth(2)currentActionID(305)currentActionFrame(7)currentActionFrameCount(15)isAlwaysCancelable(False)currentActionHitCount(0)currentHitStunFrame(0)isInHitStun(False)isAlwaysCancelable(False)"
-'''
-
 class DataPreprocessor():
     '''
     This class handles all data preprocessing. It's methods:

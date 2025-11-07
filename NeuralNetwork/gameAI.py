@@ -3,7 +3,7 @@ import pandas as pd
 import tensorflow as tf
 
 from preProcessing import DataPreprocessor
-from network import F1Score, weightedBinaryCrossentropy
+from NeuralNetwork.modelObjects import F1Score, weightedBinaryCrossentropy
 from tensorflow.keras.models import load_model # type: ignore
 
 
